@@ -1,0 +1,112 @@
+<view class="container">
+  <!-- 积分头部 -->
+  <view class="points-header">
+    <view class="avatar-section" bindtap="switchUser">
+      <view class="avatar">
+        <image wx:if="{{currentUser.avatar}}" class="avatar-image" src="{{currentUser.avatar}}" mode="aspectFill" />
+        <text wx:else class="avatar-icon">🎓</text>
+      </view>
+      <view class="user-info">
+        <text class="username">{{currentUser.name || '小小学霸'}}</text>
+        <text class="switch-hint">点击切换用户</text>
+      </view>
+    </view>
+
+    <view class="points-display">
+      <text class="points-label">我的积分</text>
+      <view class="points-value">
+        <text class="trophy-icon">🏆</text>
+        <text class="points-number">{{totalPoints}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 积分商城入口 -->
+  <view class="shop-entry" bindtap="goToShop">
+    <view class="shop-left">
+      <view class="shop-icon-wrapper">
+        <text class="shop-icon">🎁</text>
+      </view>
+      <view class="shop-info">
+        <text class="shop-title">积分商城</text>
+        <text class="shop-desc">用积分兑换心仪礼物</text>
+      </view>
+    </view>
+    <view class="shop-arrow">
+      <text class="arrow-icon">→</text>
+    </view>
+  </view>
+
+  <!-- 等级卡片 -->
+  <view class="level-card">
+    <view class="level-info">
+      <view class="level-badge">
+        <text class="level-icon">{{levelInfo.icon}}</text>
+      </view>
+      <view class="level-details">
+        <text class="level-name">{{levelInfo.name}}</text>
+        <text class="level-desc">{{levelInfo.desc}}</text>
+      </view>
+    </view>
+
+    <view class="progress-section">
+      <view class="progress-header">
+        <text class="progress-label">距离下一级</text>
+        <text class="progress-text">{{levelInfo.nextPoints - totalPoints}}分</text>
+      </view>
+      <view class="level-progress-bar">
+        <view class="level-progress-fill" style="width: {{levelProgress}}%"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 成就墙 -->
+  <view class="achievements-section">
+    <view class="section-header">
+      <text class="section-title">🎖️ 成就墙</text>
+      <text class="section-subtitle">{{unlockedCount}}/{{achievements.length}} 已解锁</text>
+    </view>
+
+    <view class="achievements-grid">
+      <view
+        class="achievement-item {{item.unlocked ? 'unlocked' : 'locked'}}"
+        wx:for="{{achievements}}"
+        wx:key="id"
+      >
+        <view class="achievement-icon">
+          <text>{{item.icon}}</text>
+        </view>
+        <text class="achievement-name">{{item.name}}</text>
+        <text class="achievement-desc">{{item.desc}}</text>
+        <view class="lock-overlay" wx:if="{{!item.unlocked}}">
+          <text class="lock-icon">🔒</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 积分明细 -->
+  <view class="points-detail-section">
+    <view class="section-header">
+      <text class="section-title">💰 积分明细</text>
+    </view>
+
+    <view class="detail-list" wx:if="{{pointsHistory.length > 0}}">
+      <view class="detail-item" wx:for="{{pointsHistory}}" wx:key="timestamp">
+        <view class="detail-left">
+          <text class="detail-icon">{{item.icon}}</text>
+          <view class="detail-info">
+            <text class="detail-title">{{item.title}}</text>
+            <text class="detail-time">{{item.time}}</text>
+          </view>
+        </view>
+        <text class="detail-points positive">+{{item.points}}</text>
+      </view>
+    </view>
+
+    <view class="empty-detail" wx:else>
+      <text class="empty-icon">📝</text>
+      <text class="empty-text">暂无积分记录</text>
+    </view>
+  </view>
+</view>

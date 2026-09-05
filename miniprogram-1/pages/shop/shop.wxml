@@ -1,0 +1,66 @@
+<view class="container">
+  <!-- 顶部积分信息 -->
+  <view class="points-header">
+    <view class="user-info">
+      <image class="user-avatar-small" src="{{currentUser.avatar}}" mode="aspectFill" />
+      <text class="user-name-small">{{currentUser.name}}</text>
+    </view>
+    <view class="points-display">
+      <text class="points-label">我的积分</text>
+      <text class="points-value">{{totalPoints}}</text>
+    </view>
+  </view>
+
+  <!-- 礼物列表 -->
+  <view class="gifts-section">
+    <view class="section-title">
+      <text class="title-text">🎁 精选礼物</text>
+      <text class="title-desc">用学习积分兑换心仪礼物</text>
+    </view>
+
+    <view class="gifts-list">
+      <view
+        wx:for="{{gifts}}"
+        wx:key="id"
+        class="gift-card"
+        bindtap="viewGiftDetail"
+        data-id="{{item.id}}">
+        <!-- 轮播图 -->
+        <swiper
+          class="gift-swiper"
+          indicator-dots="{{true}}"
+          indicator-color="rgba(255, 255, 255, 0.5)"
+          indicator-active-color="#ffffff"
+          autoplay="{{true}}"
+          interval="3000"
+          circular="{{true}}">
+          <swiper-item wx:for="{{item.images}}" wx:key="*this" wx:for-item="img">
+            <image class="gift-image" src="{{img}}" mode="aspectFill" />
+          </swiper-item>
+        </swiper>
+
+        <!-- 礼物信息 -->
+        <view class="gift-info">
+          <text class="gift-name">{{item.name}}</text>
+          <text class="gift-desc">{{item.description}}</text>
+          <view class="gift-footer">
+            <view class="gift-price">
+              <text class="price-icon">🏆</text>
+              <text class="price-value">{{item.points}}</text>
+              <text class="price-unit">积分</text>
+            </view>
+            <view class="exchange-btn {{totalPoints >= item.points ? 'active' : 'disabled'}}">
+              {{totalPoints >= item.points ? '立即兑换' : '积分不足'}}
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 兑换记录入口 -->
+  <view class="records-btn" bindtap="viewRecords">
+    <text class="records-icon">📋</text>
+    <text class="records-text">兑换记录</text>
+  </view>
+</view>

@@ -1,0 +1,93 @@
+page {
+  background: #f5f7fa;
+}
+
+.container {
+  padding: 32rpx;
+  min-height: 100vh;
+}
+
+.records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.record-item {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  padding: 32rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.record-icon {
+  font-size: 64rpx;
+  margin-right: 24rpx;
+}
+
+.record-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.record-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.record-time {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.record-points {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.points-value {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #ef4444;
+}
+
+.points-unit {
+  font-size: 22rpx;
+  color: #9ca3af;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 48rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 32rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 16rpx;
+}
+
+.empty-hint {
+  display: block;
+  font-size: 26rpx;
+  color: #9ca3af;
+}

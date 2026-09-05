@@ -1,0 +1,184 @@
+page {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.container {
+  padding: 32rpx;
+  min-height: 100vh;
+}
+
+/* 顶部信息栏 */
+.header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 48rpx;
+}
+
+.date-info {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 16rpx 24rpx;
+  border-radius: 48rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.date-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.date-text {
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.points-badge {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  padding: 16rpx 24rpx;
+  border-radius: 48rpx;
+  box-shadow: 0 4rpx 12rpx rgba(255, 215, 0, 0.3);
+}
+
+.trophy-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.points-text {
+  font-size: 28rpx;
+  color: #8b4513;
+  font-weight: 600;
+}
+
+/* 页面标题 */
+.page-title {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 48rpx;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
+}
+
+/* 科目列表 */
+.subject-list {
+  margin-bottom: 48rpx;
+}
+
+.subject-card {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 36rpx 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s;
+  border-left: 8rpx solid;
+}
+
+.subject-card:active {
+  transform: scale(0.98);
+}
+
+.math-card {
+  border-left-color: #3b82f6;
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+}
+
+.english-card {
+  border-left-color: #10b981;
+  background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+}
+
+.chinese-card {
+  border-left-color: #f59e0b;
+  background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);
+}
+
+.subject-icon {
+  font-size: 72rpx;
+  margin-right: 24rpx;
+}
+
+.subject-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.subject-name {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8rpx;
+}
+
+.subject-desc {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+.arrow-icon {
+  font-size: 48rpx;
+  color: #9ca3af;
+  font-weight: 300;
+}
+
+/* 今日进度 */
+.today-progress {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
+.progress-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 24rpx;
+}
+
+.progress-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.progress-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 24rpx;
+  background: #f9fafb;
+  border-radius: 16rpx;
+}
+
+.progress-subject {
+  font-size: 28rpx;
+  color: #374151;
+  font-weight: 500;
+}
+
+.progress-status {
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
+  font-weight: 500;
+}
+
+.progress-status.completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.progress-status.pending {
+  background: #fee2e2;
+  color: #991b1b;
+}

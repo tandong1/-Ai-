@@ -1,0 +1,39 @@
+{
+  "pages": [
+    "pages/user-select/user-select",
+    "pages/daily-challenge/daily-challenge",
+    "pages/subject-challenge/subject-challenge",
+    "pages/shop/shop",
+    "pages/exchange-records/exchange-records",
+    "pages/history/history",
+    "pages/points/points"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#6366f1",
+    "navigationBarTitleText": "小小学霸",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#6366f1",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/daily-challenge/daily-challenge",
+        "text": "每日挑战"
+      },
+      {
+        "pagePath": "pages/history/history",
+        "text": "历史记录"
+      },
+      {
+        "pagePath": "pages/points/points",
+        "text": "我的积分"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

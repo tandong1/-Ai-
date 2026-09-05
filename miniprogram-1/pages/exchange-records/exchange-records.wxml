@@ -1,0 +1,21 @@
+<view class="container">
+  <view wx:if="{{records.length > 0}}" class="records-list">
+    <view wx:for="{{records}}" wx:key="index" class="record-item">
+      <view class="record-icon">🎁</view>
+      <view class="record-content">
+        <text class="record-name">{{item.giftName}}</text>
+        <text class="record-time">{{item.timeStr}}</text>
+      </view>
+      <view class="record-points">
+        <text class="points-value">-{{item.points}}</text>
+        <text class="points-unit">积分</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="empty-state">
+    <text class="empty-icon">📦</text>
+    <text class="empty-text">还没有兑换记录</text>
+    <text class="empty-hint">快去商城兑换心仪的礼物吧！</text>
+  </view>
+</view>

@@ -1,0 +1,237 @@
+const app = getApp();
+
+Page({
+  data: {
+    currentDate: '',
+    totalPoints: 0,
+    completed: false,
+
+    // 题目相关
+    currentQuestion: 0,
+    totalQuestions: 5,
+    difficulty: 'easy',
+    difficultyText: '简单',
+    question: {},
+    questions: [],
+
+    // 答题相关
+    selectedOption: null,
+    showResult: false,
+    correctCount: 0,
+    earnedPoints: 0,
+    accuracy: 0,
+
+    // UI相关
+    progress: 0,
+    optionLabels: ['A', 'B', 'C', 'D'],
+    motivationText: '加油!你一定可以的!',
+
+    // 激励语库
+    motivations: [
+      '相信自己,你能做到!',
+      '每一步都是进步!',
+      '坚持就是胜利!',
+      '你真棒,继续加油!',
+      '学习使你更强大!'
+    ]
+  },
+
+  onLoad() {
+    this.initPage();
+  },
+
+  initPage() {
+    // 设置日期
+    const date = new Date();
+    this.setData({
+      currentDate: `${date.getMonth() + 1}月${date.getDate()}日`,
+      totalPoints: app.globalData.totalPoints
+    });
+
+    // 检查今日是否已完成
+    const todayKey = this.getTodayKey();
+    const completedToday = wx.getStorageSync(todayKey);
+
+    if (completedToday) {
+      this.setData({
+        completed: true,
+        ...completedToday.data
+      });
+    } else {
+      this.loadQuestions();
+      this.updateMotivation();
+    }
+  },
+
+  getTodayKey() {
+    const date = new Date();
+    return `challenge_${date.getFullYear()}_${date.getMonth() + 1}_${date.getDate()}`;
+  },
+
+  loadQuestions() {
+    // 模拟题库,实际应该从后端获取
+    const questionBank = [
+      {
+        text: '2 + 3 = ?',
+        options: ['3', '4', '5', '6'],
+        answer: 2
+      },
+      {
+        text: '小明有5个苹果,吃了2个,还剩几个?',
+        options: ['2个', '3个', '4个', '5个'],
+        answer: 1
+      },
+      {
+        text: '一周有几天?',
+        options: ['5天', '6天', '7天', '8天'],
+        answer: 2
+      },
+      {
+        text: '10 - 4 = ?',
+        options: ['4', '5', '6', '7'],
+        answer: 2
+      },
+      {
+        text: '太阳从哪边升起?',
+        options: ['东边', '西边', '南边', '北边'],
+        answer: 0
+      }
+    ];
+
+    this.setData({
+      questions: questionBank,
+      question: questionBank[0],
+      progress: (1 / this.data.totalQuestions) * 100
+    });
+  },
+
+  selectOption(e) {
+    if (this.data.showResult) return;
+
+    const index = e.currentTarget.dataset.index;
+    console.log('选择选项:', index);
+    this.setData({
+      selectedOption: index
+    });
+    console.log('当前selectedOption:', this.data.selectedOption);
+  },
+
+  submitAnswer() {
+    console.log('submitAnswer被调用');
+    const { selectedOption, question, correctCount } = this.data;
+    console.log('selectedOption值:', selectedOption, '类型:', typeof selectedOption);
+
+    // 确保已选择答案
+    if (selectedOption === null || selectedOption === undefined) {
+      wx.showToast({
+        title: '请先选择一个答案',
+        icon: 'none'
+      });
+      return;
+    }
+
+    const isCorrect = selectedOption === question.answer;
+    console.log('是否正确:', isCorrect, '正确答案:', question.answer);
+
+    this.setData({
+      showResult: true,
+      correctCount: isCorrect ? correctCount + 1 : correctCount
+    });
+
+    // 播放反馈
+    if (isCorrect) {
+      wx.showToast({
+        title: '回答正确!',
+        icon: 'success'
+      });
+    } else {
+      wx.showToast({
+        title: '再想想哦~',
+        icon: 'none'
+      });
+    }
+  },
+
+  nextQuestion() {
+    const { currentQuestion, totalQuestions } = this.data;
+
+    if (currentQuestion < totalQuestions - 1) {
+      // 下一题
+      const nextIndex = currentQuestion + 1;
+      this.setData({
+        currentQuestion: nextIndex,
+        question: this.data.questions[nextIndex],
+        selectedOption: null,
+        showResult: false,
+        progress: ((nextIndex + 1) / totalQuestions) * 100
+      });
+      this.updateMotivation();
+    } else {
+      // 完成挑战
+      this.completeChallenge();
+    }
+  },
+
+  completeChallenge() {
+    const { correctCount, totalQuestions } = this.data;
+    const accuracy = Math.round((correctCount / totalQuestions) * 100);
+    const earnedPoints = correctCount * 10;
+
+    // 更新全局积分
+    app.globalData.totalPoints += earnedPoints;
+    app.saveUserData();
+
+    // 保存今日记录
+    const todayKey = this.getTodayKey();
+    const challengeData = {
+      date: this.data.currentDate,
+      correctCount,
+      totalQuestions,
+      accuracy,
+      earnedPoints,
+      timestamp: Date.now()
+    };
+
+    wx.setStorageSync(todayKey, {
+      completed: true,
+      data: challengeData
+    });
+
+    // 保存到历史记录
+    this.saveToHistory(challengeData);
+
+    this.setData({
+      completed: true,
+      correctCount,
+      accuracy,
+      earnedPoints,
+      totalPoints: app.globalData.totalPoints
+    });
+  },
+
+  saveToHistory(data) {
+    let history = wx.getStorageSync('history') || [];
+    history.unshift(data);
+    if (history.length > 30) {
+      history = history.slice(0, 30);
+    }
+    wx.setStorageSync('history', history);
+  },
+
+  updateMotivation() {
+    const { motivations } = this.data;
+    const randomIndex = Math.floor(Math.random() * motivations.length);
+    this.setData({
+      motivationText: motivations[randomIndex]
+    });
+  },
+
+  viewHistory() {
+    wx.switchTab({
+      url: '/pages/history/history'
+    });
+  }
+});
+
+
+

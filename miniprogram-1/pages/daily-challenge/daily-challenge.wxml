@@ -1,0 +1,70 @@
+<view class="container">
+  <!-- 顶部信息栏 -->
+  <view class="header-info">
+    <view class="date-info">
+      <text class="date-icon">📅</text>
+      <text class="date-text">{{currentDate}}</text>
+    </view>
+    <view class="points-badge">
+      <text class="trophy-icon">🏆</text>
+      <text class="points-text">{{totalPoints}}分</text>
+    </view>
+  </view>
+
+  <view class="page-title">选择学习科目</view>
+
+  <!-- 科目卡片列表 -->
+  <view class="subject-list">
+    <view class="subject-card math-card" bindtap="goToSubject" data-subject="math">
+      <view class="subject-icon">📐</view>
+      <view class="subject-info">
+        <text class="subject-name">数学</text>
+        <text class="subject-desc">逻辑思维 · 计算能力</text>
+      </view>
+      <view class="arrow-icon">→</view>
+    </view>
+
+    <view class="subject-card english-card" bindtap="goToSubject" data-subject="english">
+      <view class="subject-icon">📚</view>
+      <view class="subject-info">
+        <text class="subject-name">英语</text>
+        <text class="subject-desc">词汇积累 · 语言能力</text>
+      </view>
+      <view class="arrow-icon">→</view>
+    </view>
+
+    <view class="subject-card chinese-card" bindtap="goToSubject" data-subject="chinese">
+      <view class="subject-icon">✍️</view>
+      <view class="subject-info">
+        <text class="subject-name">语文</text>
+        <text class="subject-desc">阅读理解 · 文字表达</text>
+      </view>
+      <view class="arrow-icon">→</view>
+    </view>
+  </view>
+
+  <!-- 今日进度 -->
+  <view class="today-progress">
+    <view class="progress-title">今日学习进度</view>
+    <view class="progress-items">
+      <view class="progress-item">
+        <text class="progress-subject">数学</text>
+        <text class="progress-status {{todayProgress.math ? 'completed' : 'pending'}}">
+          {{todayProgress.math ? '已完成' : '未完成'}}
+        </text>
+      </view>
+      <view class="progress-item">
+        <text class="progress-subject">英语</text>
+        <text class="progress-status {{todayProgress.english ? 'completed' : 'pending'}}">
+          {{todayProgress.english ? '已完成' : '未完成'}}
+        </text>
+      </view>
+      <view class="progress-item">
+        <text class="progress-subject">语文</text>
+        <text class="progress-status {{todayProgress.chinese ? 'completed' : 'pending'}}">
+          {{todayProgress.chinese ? '已完成' : '未完成'}}
+        </text>
+      </view>
+    </view>
+  </view>
+</view>

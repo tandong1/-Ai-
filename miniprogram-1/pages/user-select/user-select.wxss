@@ -1,0 +1,130 @@
+page {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  height: 100vh;
+}
+
+.container {
+  padding: 120rpx 48rpx 48rpx;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 标题区域 */
+.title-section {
+  text-align: center;
+  margin-bottom: 80rpx;
+}
+
+.main-title {
+  display: block;
+  font-size: 64rpx;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 16rpx;
+  text-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.2);
+}
+
+.sub-title {
+  display: block;
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 用户卡片区域 */
+.users-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40rpx;
+  width: 100%;
+  margin-bottom: 60rpx;
+}
+
+.user-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 32rpx;
+  padding: 48rpx 40rpx 40rpx;
+  width: 280rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s;
+}
+
+.user-card:active {
+  transform: scale(0.95);
+}
+
+.avatar-wrapper {
+  position: relative;
+  margin-bottom: 24rpx;
+}
+
+.user-avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  border: 6rpx solid #ffffff;
+}
+
+.avatar-border {
+  position: absolute;
+  top: -8rpx;
+  left: -8rpx;
+  right: -8rpx;
+  bottom: -8rpx;
+  border-radius: 50%;
+  border: 4rpx solid #fbbf24;
+}
+
+.user-name {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 16rpx;
+}
+
+.user-stats {
+  display: flex;
+  gap: 20rpx;
+}
+
+.stats-item {
+  font-size: 24rpx;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
+}
+
+/* 添加用户按钮 */
+.add-user-btn {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border: 3rpx dashed rgba(255, 255, 255, 0.5);
+  border-radius: 48rpx;
+  padding: 24rpx 48rpx;
+  transition: all 0.3s;
+}
+
+.add-user-btn:active {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.add-icon {
+  font-size: 48rpx;
+  color: #ffffff;
+  font-weight: 300;
+}
+
+.add-text {
+  font-size: 28rpx;
+  color: #ffffff;
+  font-weight: 500;
+}
