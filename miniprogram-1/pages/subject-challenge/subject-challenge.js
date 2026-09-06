@@ -277,6 +277,8 @@ Page({
     const answers = [];
     const optionMap = ['A', 'B', 'C', 'D'];
 
+    console.log('=== 开始提交答案 ===');
+
     // 构建答案数组
     this.data.questions.forEach((question, index) => {
       const userAnswer = this.data.answers[index];
@@ -294,6 +296,8 @@ Page({
       }
     });
 
+    console.log('提交的答案数据:', answers);
+
     wx.showLoading({
       title: '提交中...'
     });
@@ -304,6 +308,7 @@ Page({
       answers: answers
     })
       .then(data => {
+        console.log('=== 收到后端响应 ===');
         wx.hideLoading();
 
         // ========== 调试日志开始 ==========
@@ -360,6 +365,8 @@ Page({
         });
       })
       .catch(err => {
+        console.log('=== 提交答案出错 ===');
+        console.error('错误详情:', err);
         wx.hideLoading();
         console.error('提交失败:', err);
         wx.showToast({

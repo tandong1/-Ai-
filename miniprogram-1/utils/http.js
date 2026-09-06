@@ -30,6 +30,14 @@ const http = {
         },
         timeout: this.timeout,
         success: (res) => {
+          // 添加调试日志
+          console.log('=== HTTP响应 ===');
+          console.log('URL:', fullUrl);
+          console.log('statusCode:', res.statusCode);
+          console.log('res.data:', JSON.stringify(res.data, null, 2));
+          console.log('res.data.code:', res.data.code);
+          console.log('res.data.data:', res.data.data);
+
           // 统一处理响应
           if (res.statusCode === 200) {
             if (res.data.code === 200) {
