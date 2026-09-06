@@ -28,8 +28,9 @@ public class GiftServiceImpl implements GiftService {
         log.info("获取可用礼物列表");
 
         LambdaQueryWrapper<Gift> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Gift::getStatus, "active")
-               .orderByAsc(Gift::getPoints);
+        wrapper.eq(Gift::getIsActive, true)
+               .orderByAsc(Gift::getSortOrder)
+               .orderByAsc(Gift::getPointsRequired);
 
         List<Gift> gifts = giftMapper.selectList(wrapper);
 
@@ -40,7 +41,12 @@ public class GiftServiceImpl implements GiftService {
 
     private GiftVO convertToVO(Gift gift) {
         GiftVO vo = new GiftVO();
-        BeanUtils.copyProperties(gift, vo);
+        vo.setId(gift.getId());
+        vo.setName(gift.getName());
+        vo.setDescription(gift.getDescription());
+        vo.setPoints(gift.getPointsRequired());
+        vo.setImages(gift.getImages());
+        vo.setStock(gift.getStock());
         return vo;
     }
 }

@@ -25,8 +25,19 @@
         class="gift-card"
         bindtap="viewGiftDetail"
         data-id="{{item.id}}">
-        <!-- 礼物图片 -->
-        <image class="gift-image" src="{{item.image}}" mode="aspectFill" />
+        <!-- 礼物图片轮播 -->
+        <swiper
+          class="gift-swiper"
+          indicator-dots="{{item.images.length > 1}}"
+          indicator-color="rgba(255, 255, 255, 0.5)"
+          indicator-active-color="#ffffff"
+          autoplay="{{item.images.length > 1}}"
+          interval="3000"
+          circular="{{true}}">
+          <swiper-item wx:for="{{item.images}}" wx:key="*this" wx:for-item="img">
+            <image class="gift-image" src="{{img}}" mode="aspectFill" />
+          </swiper-item>
+        </swiper>
 
         <!-- 礼物信息 -->
         <view class="gift-info">

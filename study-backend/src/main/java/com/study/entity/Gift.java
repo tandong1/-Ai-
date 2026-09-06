@@ -1,15 +1,17 @@
 package com.study.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 礼物实体
  */
 @Data
-@TableName("gifts")
+@TableName(value = "gifts", autoResultMap = true)
 public class Gift implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -29,22 +31,28 @@ public class Gift implements Serializable {
     /**
      * 所需积分
      */
-    private Integer points;
+    private Integer pointsRequired;
 
     /**
-     * 礼物图片URL
+     * 礼物图片URL数组
      */
-    private String imageUrl;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<String> images;
 
     /**
-     * 库存数量
+     * 库存数量（-1表示无限）
      */
     private Integer stock;
 
     /**
-     * 状态: active/inactive
+     * 是否上架
      */
-    private String status;
+    private Boolean isActive;
+
+    /**
+     * 排序权重
+     */
+    private Integer sortOrder;
 
     /**
      * 创建时间

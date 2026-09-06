@@ -1,6 +1,7 @@
 package com.study.vo;
 
 import lombok.Data;
+import java.util.List;
 
 /**
  * 礼物VO
@@ -11,7 +12,6 @@ public class GiftVO {
     private String name;
     private String description;
     private Integer points;
-    private String imageUrl;
+    private List<String> images;
     private Integer stock;
-    private String status;
 }

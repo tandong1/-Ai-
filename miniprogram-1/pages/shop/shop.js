@@ -37,7 +37,7 @@ Page({
           name: gift.name,
           description: gift.description,
           points: gift.points,
-          image: gift.imageUrl,
+          images: gift.images || [],
           stock: gift.stock
         }));
 
