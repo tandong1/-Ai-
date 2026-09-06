@@ -152,14 +152,13 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- MyBatis Plus 分页插件所需的JSqlParser（3.5.7+版本需要单独引入） 
-        -->
+        
+        <!-- MyBatis Plus -->
         <dependency>
-              <groupId>com.baomidou</groupId>
-              <artifactId>mybatis-plus-jsqlparser</artifactId>
-              <version>${mybatis-plus.version}</version>
-          </dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
