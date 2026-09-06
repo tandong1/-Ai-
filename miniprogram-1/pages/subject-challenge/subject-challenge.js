@@ -52,6 +52,18 @@ Page({
     this.loadQuestions();
   },
 
+  onHide: function() {
+    // 页面隐藏时，通知首页刷新积分
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      const prevPage = pages[pages.length - 2];
+      // 如果上一页是daily-challenge，刷新它的积分
+      if (prevPage.route === 'pages/daily-challenge/daily-challenge') {
+        prevPage.updatePoints && prevPage.updatePoints();
+      }
+    }
+  },
+
   loadQuestions: function() {
     const that = this;
 
@@ -448,10 +460,20 @@ Page({
 
         // 更新用户积分（使用后端返回的实际积分）
         const currentUser = wx.getStorageSync('currentUser');
-        if (currentUser) {
-          currentUser.totalPoints = data.newBalance || (currentUser.totalPoints || 0) + data.pointsEarned;
+        if (currentUser && data.newBalance !== undefined) {
+          // 使用后端返回的新余额
+          currentUser.totalPoints = data.newBalance;
           wx.setStorageSync('currentUser', currentUser);
-          app.globalData.totalPoints = currentUser.totalPoints;
+
+          // 同步到全局数据
+          app.globalData.currentUser = currentUser;
+          app.globalData.totalPoints = data.newBalance;
+
+          console.log('积分已更新:', {
+            old: currentUser.totalPoints - data.pointsEarned,
+            earned: data.pointsEarned,
+            new: data.newBalance
+          });
         }
 
         // 保存今日完成状态

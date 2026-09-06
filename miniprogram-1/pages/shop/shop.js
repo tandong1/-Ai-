@@ -15,6 +15,8 @@ Page({
 
   onShow: function() {
     this.loadUserData();
+    // 每次显示时重新加载礼物列表（以防库存变化）
+    this.loadGifts();
   },
 
   loadGifts: function() {
