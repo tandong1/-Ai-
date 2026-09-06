@@ -339,10 +339,32 @@ Page({
         }
         // ========== 调试日志结束 ==========
 
-        // 更新用户积分（每个科目1分）
+        // 【关键修复】用后端返回的完整数据更新前端题目信息
+        if (data.details && data.details.length > 0) {
+          const updatedQuestions = that.data.questions.map((q, index) => {
+            const detail = data.details.find(d => d.questionId === q.id);
+            if (detail) {
+              return {
+                ...q,
+                correctAnswer: detail.correctAnswer,
+                analysis: detail.analysis
+              };
+            }
+            return q;
+          });
+
+          that.setData({
+            questions: updatedQuestions,
+            currentQuestionData: updatedQuestions[that.data.currentQuestion]
+          });
+
+          console.log('已更新题目数据，包含正确答案和解析');
+        }
+
+        // 更新用户积分（使用后端返回的实际积分）
         const currentUser = wx.getStorageSync('currentUser');
         if (currentUser) {
-          currentUser.totalPoints = (currentUser.totalPoints || 0) + 1;
+          currentUser.totalPoints = data.newBalance || (currentUser.totalPoints || 0) + data.pointsEarned;
           wx.setStorageSync('currentUser', currentUser);
           app.globalData.totalPoints = currentUser.totalPoints;
         }
