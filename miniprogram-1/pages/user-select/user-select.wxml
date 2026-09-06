@@ -17,7 +17,7 @@
       </view>
       <text class="user-name">{{item.name}}</text>
       <view class="user-stats">
-        <text class="stats-item">🏆 {{item.points}}分</text>
+        <text class="stats-item">🏆 {{item.totalPoints || 0}}分</text>
       </view>
     </view>
   </view>
