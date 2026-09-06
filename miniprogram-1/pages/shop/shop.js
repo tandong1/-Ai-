@@ -1,85 +1,57 @@
+const http = require('../../utils/http.js');
 var app = getApp();
 
 Page({
   data: {
     currentUser: {},
     totalPoints: 0,
-    gifts: [
-      {
-        id: 1,
-        name: '乐高积木玩具',
-        description: '激发创造力，拼搭快乐时光',
-        points: 500,
-        images: [
-          'https://via.placeholder.com/600x400/4299e1/ffffff?text=乐高1',
-          'https://via.placeholder.com/600x400/3b82f6/ffffff?text=乐高2',
-          'https://via.placeholder.com/600x400/2563eb/ffffff?text=乐高3'
-        ]
-      },
-      {
-        id: 2,
-        name: '儿童故事书套装',
-        description: '10本精选绘本，开启阅读之旅',
-        points: 300,
-        images: [
-          'https://via.placeholder.com/600x400/10b981/ffffff?text=故事书1',
-          'https://via.placeholder.com/600x400/059669/ffffff?text=故事书2',
-          'https://via.placeholder.com/600x400/047857/ffffff?text=故事书3'
-        ]
-      },
-      {
-        id: 3,
-        name: '儿童智能手表',
-        description: '定位、通话、计步，安全又有趣',
-        points: 800,
-        images: [
-          'https://via.placeholder.com/600x400/f59e0b/ffffff?text=手表1',
-          'https://via.placeholder.com/600x400/d97706/ffffff?text=手表2',
-          'https://via.placeholder.com/600x400/b45309/ffffff?text=手表3'
-        ]
-      },
-      {
-        id: 4,
-        name: '科学实验套装',
-        description: '20+趣味实验，探索科学奥秘',
-        points: 400,
-        images: [
-          'https://via.placeholder.com/600x400/8b5cf6/ffffff?text=实验1',
-          'https://via.placeholder.com/600x400/7c3aed/ffffff?text=实验2',
-          'https://via.placeholder.com/600x400/6d28d9/ffffff?text=实验3'
-        ]
-      },
-      {
-        id: 5,
-        name: '儿童滑板车',
-        description: '可折叠设计，户外运动好伙伴',
-        points: 600,
-        images: [
-          'https://via.placeholder.com/600x400/ec4899/ffffff?text=滑板车1',
-          'https://via.placeholder.com/600x400/db2777/ffffff?text=滑板车2',
-          'https://via.placeholder.com/600x400/be185d/ffffff?text=滑板车3'
-        ]
-      },
-      {
-        id: 6,
-        name: '超级飞侠玩具',
-        description: '变形机器人，陪伴成长每一天',
-        points: 350,
-        images: [
-          'https://via.placeholder.com/600x400/ef4444/ffffff?text=飞侠1',
-          'https://via.placeholder.com/600x400/dc2626/ffffff?text=飞侠2',
-          'https://via.placeholder.com/600x400/b91c1c/ffffff?text=飞侠3'
-        ]
-      }
-    ]
+    gifts: []
   },
 
   onLoad: function() {
     this.loadUserData();
+    this.loadGifts();
   },
 
   onShow: function() {
     this.loadUserData();
+  },
+
+  loadGifts: function() {
+    const that = this;
+
+    wx.showLoading({
+      title: '加载中...'
+    });
+
+    // 从后端获取礼物列表
+    http.get('/gifts')
+      .then(gifts => {
+        wx.hideLoading();
+
+        // 格式化礼物数据
+        const formattedGifts = gifts.map(gift => ({
+          id: gift.id,
+          name: gift.name,
+          description: gift.description,
+          points: gift.points,
+          image: gift.imageUrl,
+          stock: gift.stock
+        }));
+
+        that.setData({
+          gifts: formattedGifts
+        });
+      })
+      .catch(err => {
+        wx.hideLoading();
+        console.error('加载礼物列表失败:', err);
+
+        wx.showToast({
+          title: '加载失败',
+          icon: 'none'
+        });
+      });
   },
 
   loadUserData: function() {
