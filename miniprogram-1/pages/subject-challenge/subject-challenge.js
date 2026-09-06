@@ -59,68 +59,153 @@ Page({
       title: '加载题目中...'
     });
 
+    // 先尝试获取今日题目（未完成的）
     http.get('/questions/daily', { subject: this.data.subject })
       .then(data => {
         wx.hideLoading();
-
-        if (!data.questions || data.questions.length === 0) {
-          wx.showModal({
-            title: '提示',
-            content: '今日题目尚未生成，请稍后再试',
-            showCancel: false,
-            success: function() {
-              wx.navigateBack();
-            }
-          });
-          return;
-        }
-
-        // 格式化题目数据
-        const questions = data.questions.map(q => {
-          let options = [];
-          if (q.options) {
-            if (typeof q.options === 'string') {
-              try {
-                options = JSON.parse(q.options);
-              } catch (e) {
-                console.error('解析options失败:', e, q.options);
-                options = [];
-              }
-            } else if (Array.isArray(q.options)) {
-              options = q.options;
-            }
-          }
-
-          return {
-            id: q.id,
-            type: q.questionType,
-            question: q.questionText,
-            options: options,
-            correctAnswer: q.correctAnswer,
-            analysis: q.analysis || '暂无解析'
-          };
-        });
-
-        that.setData({
-          questions: questions,
-          totalQuestions: questions.length,
-          currentQuestionData: questions[0]
-        });
-
-        that.updateProgress();
+        that.loadUncompletedQuestions(data);
       })
       .catch(err => {
-        wx.hideLoading();
-        console.error('加载题目失败:', err);
-        wx.showModal({
-          title: '加载失败',
-          content: '无法获取题目,请检查网络连接',
-          showCancel: false,
-          success: function() {
-            wx.navigateBack();
-          }
-        });
+        console.log('获取未完成题目失败，尝试获取已完成题目:', err);
+
+        // 如果获取未完成题目失败，尝试获取已完成题目
+        http.get('/questions/daily/completed', { subject: this.data.subject })
+          .then(data => {
+            wx.hideLoading();
+            that.loadCompletedQuestions(data);
+          })
+          .catch(err2 => {
+            wx.hideLoading();
+            console.error('加载题目失败:', err2);
+            wx.showModal({
+              title: '提示',
+              content: '今日题目尚未生成，请稍后再试',
+              showCancel: false,
+              success: function() {
+                wx.navigateBack();
+              }
+            });
+          });
       });
+  },
+
+  // 加载未完成的题目
+  loadUncompletedQuestions: function(data) {
+    const that = this;
+
+    if (!data.questions || data.questions.length === 0) {
+      wx.showModal({
+        title: '提示',
+        content: '今日题目尚未生成，请稍后再试',
+        showCancel: false,
+        success: function() {
+          wx.navigateBack();
+        }
+      });
+      return;
+    }
+
+    // 格式化题目数据
+    const questions = data.questions.map(q => {
+      let options = [];
+      if (q.options) {
+        if (typeof q.options === 'string') {
+          try {
+            options = JSON.parse(q.options);
+          } catch (e) {
+            console.error('解析options失败:', e, q.options);
+            options = [];
+          }
+        } else if (Array.isArray(q.options)) {
+          options = q.options;
+        }
+      }
+
+      return {
+        id: q.id,
+        type: q.questionType,
+        question: q.questionText,
+        options: options,
+        correctAnswer: q.correctAnswer,
+        analysis: q.analysis || '暂无解析'
+      };
+    });
+
+    that.setData({
+      questions: questions,
+      totalQuestions: questions.length,
+      currentQuestionData: questions[0]
+    });
+
+    that.updateProgress();
+  },
+
+  // 加载已完成的题目（查看模式）
+  loadCompletedQuestions: function(data) {
+    const that = this;
+
+    if (!data.questions || data.questions.length === 0) {
+      wx.showModal({
+        title: '提示',
+        content: '暂无已完成题目',
+        showCancel: false,
+        success: function() {
+          wx.navigateBack();
+        }
+      });
+      return;
+    }
+
+    // 格式化已完成题目数据
+    const questions = data.questions.map(q => {
+      let options = [];
+      if (q.options) {
+        if (typeof q.options === 'string') {
+          try {
+            options = JSON.parse(q.options);
+          } catch (e) {
+            console.error('解析options失败:', e, q.options);
+            options = [];
+          }
+        } else if (Array.isArray(q.options)) {
+          options = q.options;
+        }
+      }
+
+      return {
+        id: q.questionId,
+        type: q.questionType,
+        question: q.questionText,
+        options: options,
+        correctAnswer: q.correctAnswer,
+        analysis: q.analysis || '暂无解析',
+        userAnswer: q.userAnswer,
+        isCorrect: q.isCorrect
+      };
+    });
+
+    // 构建答案对象
+    const answers = {};
+    questions.forEach((q, index) => {
+      if (q.type === 'choice') {
+        // 将字母答案转换为索引
+        const optionLabels = ['A', 'B', 'C', 'D'];
+        answers[index] = optionLabels.indexOf(q.userAnswer);
+      } else {
+        answers[index] = q.userAnswer;
+      }
+    });
+
+    that.setData({
+      questions: questions,
+      totalQuestions: questions.length,
+      currentQuestionData: questions[0],
+      answers: answers,
+      showResult: true, // 显示为已完成状态
+      correctCount: questions.filter(q => q.isCorrect).length
+    });
+
+    that.updateProgress();
   },
 
   selectOption: function(e) {
