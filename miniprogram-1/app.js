@@ -7,7 +7,8 @@ App({
   },
 
   onLaunch: function() {
-    this.checkUserLogin();
+    // 启动时加载用户数据，但不强制跳转
+    this.loadUserData();
   },
 
   checkUserLogin: function() {
@@ -16,9 +17,9 @@ App({
       wx.reLaunch({
         url: '/pages/user-select/user-select'
       });
-    } else {
-      this.loadUserData();
+      return false;
     }
+    return true;
   },
 
   loadUserData: function() {

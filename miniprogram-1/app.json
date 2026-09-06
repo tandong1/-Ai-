@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/splash/splash",
     "pages/user-select/user-select",
     "pages/daily-challenge/daily-challenge",
     "pages/subject-challenge/subject-challenge",
