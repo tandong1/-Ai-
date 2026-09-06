@@ -221,7 +221,6 @@ public class QuestionServiceImpl implements QuestionService {
                     return detail;
                 })
                 .collect(Collectors.toList());
-}
 
         CompletedQuestionsVO result = new CompletedQuestionsVO();
         result.setSubject(subject);
