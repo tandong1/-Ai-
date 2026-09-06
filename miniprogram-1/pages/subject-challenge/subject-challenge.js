@@ -306,6 +306,34 @@ Page({
       .then(data => {
         wx.hideLoading();
 
+        // ========== 调试日志开始 ==========
+        console.log('=== 提交答案完整响应 ===');
+        console.log('完整data:', JSON.stringify(data, null, 2));
+        console.log('data.details:', data.details);
+
+        if (data.details && data.details.length > 0) {
+          console.log('第一题详情:');
+          console.log('  - questionId:', data.details[0].questionId);
+          console.log('  - questionText:', data.details[0].questionText);
+          console.log('  - userAnswer:', data.details[0].userAnswer);
+          console.log('  - correctAnswer:', data.details[0].correctAnswer);
+          console.log('  - isCorrect:', data.details[0].isCorrect);
+          console.log('  - analysis:', data.details[0].analysis);
+          console.log('  - attemptCount:', data.details[0].attemptCount);
+          console.log('  - pointsEarned:', data.details[0].pointsEarned);
+
+          console.log('所有题目的正确答案和解析:');
+          data.details.forEach((detail, index) => {
+            console.log(`题目${index + 1}:`, {
+              correctAnswer: detail.correctAnswer,
+              analysis: detail.analysis
+            });
+          });
+        } else {
+          console.log('警告: data.details 为空或不存在');
+        }
+        // ========== 调试日志结束 ==========
+
         // 更新用户积分（每个科目1分）
         const currentUser = wx.getStorageSync('currentUser');
         if (currentUser) {
