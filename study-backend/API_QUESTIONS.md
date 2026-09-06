@@ -47,19 +47,21 @@
   "answers": [
     {
       "questionId": 1,
-      "userAnswer": "D",
-      "isCorrect": false,
-      "attemptCount": 3
+      "userAnswer": "A",
+      "attemptCount": 2
     },
     {
       "questionId": 2,
-      "userAnswer": "10",
-      "isCorrect": false,
-      "attemptCount": 3
+      "userAnswer": "26",
+      "attemptCount": 1
     }
   ]
 }
 ```
+
+**说明**：
+- `isCorrect` 字段已移除，后端自动判断
+- `attemptCount`: 尝试次数（前端记录，用于计算积分）
 
 **返回示例**:
 ```json
@@ -69,9 +71,37 @@
   "data": {
     "subject": "math",
     "totalQuestions": 2,
-    "correctCount": 0,
-    "pointsEarned": 0,
-    "newBalance": 0
+    "correctCount": 1,
+    "pointsEarned": 10,
+    "newBalance": 10,
+    "details": [
+      {
+        "questionId": 1,
+        "questionType": "choice",
+        "questionText": "计算: 1/2 + 1/3 = ?",
+        "options": ["5/6", "2/5", "1/6", "3/5"],
+        "userAnswer": "A",
+        "correctAnswer": "5/6",
+        "isCorrect": true,
+        "analysis": "解析：要计算 1/2 + 1/3，首先需要通分...",
+        "attemptCount": 2,
+        "pointsEarned": 5,
+        "knowledgePoint": "分数加法-通分"
+      },
+      {
+        "questionId": 2,
+        "questionType": "fill",
+        "questionText": "一个长方形的长是8cm，宽是5cm，它的周长是____cm。",
+        "options": null,
+        "userAnswer": "26",
+        "correctAnswer": "26",
+        "isCorrect": true,
+        "analysis": "解析：长方形周长公式是 (长+宽)×2...",
+        "attemptCount": 1,
+        "pointsEarned": 10,
+        "knowledgePoint": "长方形周长"
+      }
+    ]
   }
 }
 ```
@@ -81,6 +111,10 @@
 - 二次答对：5分
 - 三次及以上答对：2分
 - 答错：0分
+
+**返回字段说明**：
+- `details`: 每道题的详细结果，**包含正确答案和解析**
+- 前端收到响应后可直接显示答案和解析，无需再次查询
 
 ---
 
