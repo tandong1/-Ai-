@@ -78,7 +78,6 @@ public class QuestionServiceImpl implements QuestionService {
 
         int totalQuestions = submitDTO.getAnswers().size();
         int correctCount = 0;
-        int pointsEarned = 0;
         List<SubmitResultVO.QuestionResultDetail> details = new ArrayList<>();
 
         for (SubmitAnswerDTO.AnswerItem answerItem : submitDTO.getAnswers()) {
@@ -101,12 +100,8 @@ public class QuestionServiceImpl implements QuestionService {
                 attemptCount = 1;
             }
 
-            // 计算本题得分
-            int questionPoints = 0;
             if (isCorrect) {
                 correctCount++;
-                questionPoints = calculatePoints(attemptCount);
-                pointsEarned += questionPoints;
             }
 
             // 保存答题记录
@@ -138,23 +133,23 @@ public class QuestionServiceImpl implements QuestionService {
             detail.setIsCorrect(isCorrect);
             detail.setAnalysis(question.getAnalysis());
             detail.setAttemptCount(attemptCount);
-            detail.setPointsEarned(questionPoints);
+            detail.setPointsEarned(0); // 单题不计分
             detail.setKnowledgePoint(question.getKnowledgePoint());
 
             details.add(detail);
         }
 
-        if (pointsEarned > 0) {
-            int newTotalPoints = user.getTotalPoints() + pointsEarned;
-            userService.updateUserPoints(userId, newTotalPoints);
-        }
+        // 完成一个科目，统一加1分
+        int pointsEarned = 1;
+        int newTotalPoints = user.getTotalPoints() + pointsEarned;
+        userService.updateUserPoints(userId, newTotalPoints);
 
         SubmitResultVO result = new SubmitResultVO();
         result.setSubject(submitDTO.getSubject());
         result.setTotalQuestions(totalQuestions);
         result.setCorrectCount(correctCount);
         result.setPointsEarned(pointsEarned);
-        result.setNewBalance(user.getTotalPoints() + pointsEarned);
+        result.setNewBalance(newTotalPoints);
         result.setDetails(details);
 
         log.info("提交结果: userId={}, correct={}/{}, points=+{}, details_size={}",
@@ -177,19 +172,6 @@ public class QuestionServiceImpl implements QuestionService {
         QuestionVO vo = new QuestionVO();
         BeanUtils.copyProperties(question, vo);
         return vo;
-    }
-
-    private int calculatePoints(Integer attemptCount) {
-        if (attemptCount == null || attemptCount <= 0) {
-            return 0;
-        }
-        if (attemptCount == 1) {
-            return 10;
-        } else if (attemptCount == 2) {
-            return 5;
-        } else {
-            return 2;
-        }
     }
 
     /**
