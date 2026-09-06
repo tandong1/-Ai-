@@ -87,6 +87,10 @@ public class QuestionServiceImpl implements QuestionService {
                 throw new BusinessException("题目不存在: " + answerItem.getQuestionId());
             }
 
+            log.info("题目 {}: correctAnswer={}, analysis={}",
+                    question.getId(), question.getCorrectAnswer(),
+                    question.getAnalysis() != null ? question.getAnalysis().substring(0, Math.min(50, question.getAnalysis().length())) : "null");
+
             // 后端判断答案是否正确
             String userAnswer = normalizeAnswer(answerItem.getUserAnswer());
             String correctAnswer = normalizeAnswer(question.getCorrectAnswer());
@@ -153,8 +157,18 @@ public class QuestionServiceImpl implements QuestionService {
         result.setNewBalance(user.getTotalPoints() + pointsEarned);
         result.setDetails(details);
 
-        log.info("提交结果: userId={}, correct={}/{}, points=+{}",
-                userId, correctCount, totalQuestions, pointsEarned);
+        log.info("提交结果: userId={}, correct={}/{}, points=+{}, details_size={}",
+                userId, correctCount, totalQuestions, pointsEarned, details.size());
+
+        // 打印第一题的详细信息用于调试
+        if (!details.isEmpty()) {
+            SubmitResultVO.QuestionResultDetail firstDetail = details.get(0);
+            log.info("第一题详情: questionId={}, correctAnswer={}, analysis={}",
+                    firstDetail.getQuestionId(),
+                    firstDetail.getCorrectAnswer(),
+                    firstDetail.getAnalysis() != null ?
+                        firstDetail.getAnalysis().substring(0, Math.min(30, firstDetail.getAnalysis().length())) + "..." : "null");
+        }
 
         return result;
     }
