@@ -10,9 +10,7 @@ import com.study.mapper.QuestionMapper;
 import com.study.mapper.QuestionRecordMapper;
 import com.study.service.QuestionService;
 import com.study.service.UserService;
-import com.study.vo.DailyQuestionsVO;
-import com.study.vo.QuestionVO;
-import com.study.vo.SubmitResultVO;
+import com.study.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -21,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -147,5 +146,116 @@ public class QuestionServiceImpl implements QuestionService {
         } else {
             return 2;
         }
+    }
+
+    @Override
+    public CompletedQuestionsVO getTodayCompletedQuestions(Long userId, String subject) {
+        log.info("获取今日已完成题目: userId={}, subject={}", userId, subject);
+
+        LocalDate today = LocalDate.now();
+
+        LambdaQueryWrapper<QuestionRecord> recordWrapper = new LambdaQueryWrapper<>();
+        recordWrapper.eq(QuestionRecord::getUserId, userId)
+                    .eq(QuestionRecord::getSubject, subject)
+                    .apply("DATE(answered_at) = {0}", today)
+                    .orderByAsc(QuestionRecord::getQuestionId);
+
+        List<QuestionRecord> records = questionRecordMapper.selectList(recordWrapper);
+
+        if (records.isEmpty()) {
+            throw new BusinessException("今日还没有完成答题");
+        }
+
+        List<Long> questionIds = records.stream()
+                .map(QuestionRecord::getQuestionId)
+                .collect(Collectors.toList());
+
+        List<Question> questions = questionMapper.selectBatchIds(questionIds);
+        Map<Long, Question> questionMap = questions.stream()
+                .collect(Collectors.toMap(Question::getId, q -> q));
+
+        List<CompletedQuestionsVO.CompletedQuestionDetailVO> details = records.stream()
+                .map(record -> {
+                    CompletedQuestionsVO.CompletedQuestionDetailVO detail =
+                        new CompletedQuestionsVO.CompletedQuestionDetailVO();
+                    Question question = questionMap.get(record.getQuestionId());
+
+                    if (question != null) {
+                        detail.setQuestionId(question.getId());
+                        detail.setQuestionType(question.getQuestionType());
+                        detail.setQuestionText(question.getQuestionText());
+                        detail.setOptions(question.getOptions());
+                        detail.setKnowledgePoint(question.getKnowledgePoint());
+                    }
+
+                    detail.setUserAnswer(record.getUserAnswer());
+                    detail.setCorrectAnswer(record.getCorrectAnswer());
+                    detail.setIsCorrect(record.getIsCorrect());
+                    detail.setAnalysis(record.getAnalysis());
+                    detail.setAttemptCount(record.getAttemptCount());
+
+                    return detail;
+                })
+                .collect(Collectors.toList());
+}
+
+        CompletedQuestionsVO result = new CompletedQuestionsVO();
+        result.setSubject(subject);
+        result.setCompletedDate(today);
+        result.setQuestions(details);
+
+        return result;
+    }
+
+    @Override
+    public List<QuestionRecordVO> getQuestionRecords(Long userId, String subject, 
+                                                      LocalDate startDate, LocalDate endDate) {
+        log.info("获取答题历史: userId={}, subject={}, startDate={}, endDate={}", 
+                userId, subject, startDate, endDate);
+
+        LambdaQueryWrapper<QuestionRecord> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(QuestionRecord::getUserId, userId);
+
+        if (subject != null && !subject.isEmpty()) {
+            wrapper.eq(QuestionRecord::getSubject, subject);
+        }
+
+        if (startDate != null) {
+            wrapper.apply("DATE(answered_at) >= {0}", startDate);
+        }
+
+        if (endDate != null) {
+            wrapper.apply("DATE(answered_at) <= {0}", endDate);
+        }
+
+        wrapper.orderByDesc(QuestionRecord::getAnsweredAt);
+
+        List<QuestionRecord> records = questionRecordMapper.selectList(wrapper);
+
+        List<Long> questionIds = records.stream()
+                .map(QuestionRecord::getQuestionId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        Map<Long, Question> questionMap = questionIds.isEmpty() ? 
+            Map.of() : 
+            questionMapper.selectBatchIds(questionIds).stream()
+                .collect(Collectors.toMap(Question::getId, q -> q));
+
+        return records.stream()
+                .map(record -> {
+                    QuestionRecordVO vo = new QuestionRecordVO();
+                    BeanUtils.copyProperties(record, vo);
+
+                    Question question = questionMap.get(record.getQuestionId());
+                    if (question != null) {
+                        vo.setQuestionType(question.getQuestionType());
+                        vo.setQuestionText(question.getQuestionText());
+                        vo.setOptions(question.getOptions());
+                    }
+
+                    return vo;
+                })
+                .collect(Collectors.toList());
     }
 }
