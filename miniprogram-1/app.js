@@ -11,8 +11,8 @@ App({
   },
 
   checkUserLogin: function() {
-    var currentUserId = wx.getStorageSync('currentUserId');
-    if (!currentUserId) {
+    var token = wx.getStorageSync('token');
+    if (!token) {
       wx.reLaunch({
         url: '/pages/user-select/user-select'
       });
@@ -22,29 +22,19 @@ App({
   },
 
   loadUserData: function() {
-    var currentUserId = wx.getStorageSync('currentUserId');
-    var users = wx.getStorageSync('users') || [];
-
-    for (var i = 0; i < users.length; i++) {
-      if (users[i].id === currentUserId) {
-        this.globalData.currentUser = users[i];
-        this.globalData.totalPoints = users[i].points || 0;
-        break;
-      }
+    // 从本地存储读取用户信息（登录时已保存）
+    var currentUser = wx.getStorageSync('currentUser');
+    if (currentUser) {
+      this.globalData.currentUser = currentUser;
+      this.globalData.totalPoints = currentUser.totalPoints || 0;
     }
   },
 
   saveUserData: function() {
     if (!this.globalData.currentUser) return;
 
-    var users = wx.getStorageSync('users') || [];
-    for (var i = 0; i < users.length; i++) {
-      if (users[i].id === this.globalData.currentUser.id) {
-        users[i].points = this.globalData.totalPoints;
-        break;
-      }
-    }
-
-    wx.setStorageSync('users', users);
+    // 更新本地存储
+    this.globalData.currentUser.totalPoints = this.globalData.totalPoints;
+    wx.setStorageSync('currentUser', this.globalData.currentUser);
   }
 });

@@ -25,10 +25,20 @@ Page({
     const date = new Date();
     const currentDate = date.getMonth() + 1 + '月' + date.getDate() + '日';
 
+    // 从本地存储读取用户信息
+    const user = wx.getStorageSync('currentUser');
+    const totalPoints = user ? user.totalPoints : 0;
+
     this.setData({
       currentDate: currentDate,
-      totalPoints: app.globalData.totalPoints || 0
+      totalPoints: totalPoints
     });
+
+    // 同步到全局数据
+    if (user) {
+      app.globalData.currentUser = user;
+      app.globalData.totalPoints = totalPoints;
+    }
 
     this.loadProgress();
   },

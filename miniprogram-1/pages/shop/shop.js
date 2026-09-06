@@ -83,13 +83,28 @@ Page({
   },
 
   loadUserData: function() {
-    var currentUser = app.globalData.currentUser || { name: '小朋友', avatar: '', points: 0 };
-    var totalPoints = app.globalData.totalPoints || 0;
+    // 从本地存储读取最新用户信息
+    var currentUser = wx.getStorageSync('currentUser');
 
-    this.setData({
-      currentUser: currentUser,
-      totalPoints: totalPoints
-    });
+    if (currentUser) {
+      this.setData({
+        currentUser: currentUser,
+        totalPoints: currentUser.totalPoints || 0
+      });
+
+      // 同步到全局数据
+      app.globalData.currentUser = currentUser;
+      app.globalData.totalPoints = currentUser.totalPoints || 0;
+    } else {
+      // 如果本地没有，尝试从全局数据获取
+      var currentUser = app.globalData.currentUser || { name: '小朋友', avatar: '', totalPoints: 0 };
+      var totalPoints = app.globalData.totalPoints || 0;
+
+      this.setData({
+        currentUser: currentUser,
+        totalPoints: totalPoints
+      });
+    }
   },
 
   viewGiftDetail: function(e) {

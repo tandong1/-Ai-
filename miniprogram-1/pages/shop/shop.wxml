@@ -2,8 +2,8 @@
   <!-- 顶部积分信息 -->
   <view class="points-header">
     <view class="user-info">
-      <image class="user-avatar-small" src="{{currentUser.avatar}}" mode="aspectFill" />
-      <text class="user-name-small">{{currentUser.name}}</text>
+      <image class="user-avatar-small" src="{{currentUser.avatar || '/images/avatar1.png'}}" mode="aspectFill" />
+      <text class="user-name-small">{{currentUser.name || '小朋友'}}</text>
     </view>
     <view class="points-display">
       <text class="points-label">我的积分</text>
