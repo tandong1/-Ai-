@@ -1,4 +1,5 @@
-var app = getApp();
+const http = require('../../utils/http.js');
+const app = getApp();
 
 Page({
   data: {
@@ -10,61 +11,105 @@ Page({
   },
 
   loadUsers: function() {
-    var users = wx.getStorageSync('users') || [
-      {
-        id: 1,
-        name: '郭坤铭',
-        avatar: '/images/avatar1.png',
-        points: 0
-      },
-      {
-        id: 2,
-        name: '郭坤源',
-        avatar: '/images/avatar2.png',
-        points: 0
-      }
-    ];
+    const that = this;
 
-    this.setData({ users: users });
+    wx.showLoading({
+      title: '加载中...'
+    });
+
+    // 从后端获取用户列表
+    http.get('/users')
+      .then(users => {
+        wx.hideLoading();
+        that.setData({ users: users });
+      })
+      .catch(err => {
+        wx.hideLoading();
+        console.error('加载用户失败:', err);
+
+        // 如果后端连接失败，使用本地数据
+        wx.showModal({
+          title: '提示',
+          content: '无法连接服务器，是否使用本地模式？',
+          success: function(res) {
+            if (res.confirm) {
+              const localUsers = [
+                {
+                  id: 1,
+                  name: '郭坤铭',
+                  avatar: '/images/avatar1.png',
+                  totalPoints: 0
+                },
+                {
+                  id: 2,
+                  name: '郭坤源',
+                  avatar: '/images/avatar2.png',
+                  totalPoints: 0
+                }
+              ];
+              that.setData({ users: localUsers });
+            }
+          }
+        });
+      });
   },
 
   selectUser: function(e) {
-    var userId = e.currentTarget.dataset.id;
-    var user = this.data.users.find(function(u) {
-      return u.id === userId;
+    const userId = e.currentTarget.dataset.id;
+    const user = this.data.users.find(u => u.id === userId);
+
+    if (!user) {
+      wx.showToast({
+        title: '用户不存在',
+        icon: 'none'
+      });
+      return;
+    }
+
+    wx.showLoading({
+      title: '登录中...'
     });
 
-    if (user) {
-      app.globalData.currentUser = user;
-      app.globalData.totalPoints = user.points;
-      wx.setStorageSync('currentUserId', userId);
+    // 调用后端登录接口
+    http.post('/users/login', { userId: userId })
+      .then(data => {
+        wx.hideLoading();
 
-      wx.switchTab({
-        url: '/pages/daily-challenge/daily-challenge'
+        // 保存token和用户信息
+        wx.setStorageSync('token', data.token);
+        wx.setStorageSync('currentUserId', userId);
+        wx.setStorageSync('currentUser', data.user);
+
+        // 更新全局数据
+        app.globalData.currentUser = data.user;
+        app.globalData.totalPoints = data.user.totalPoints || 0;
+
+        wx.showToast({
+          title: '登录成功',
+          icon: 'success'
+        });
+
+        // 跳转到首页
+        setTimeout(() => {
+          wx.switchTab({
+            url: '/pages/daily-challenge/daily-challenge'
+          });
+        }, 500);
+      })
+      .catch(err => {
+        wx.hideLoading();
+        console.error('登录失败:', err);
+        wx.showToast({
+          title: '登录失败',
+          icon: 'none'
+        });
       });
-    }
   },
 
   addUser: function() {
-    var that = this;
-    wx.showModal({
-      title: '添加用户',
-      editable: true,
-      placeholderText: '请输入用户名',
-      success: function(res) {
-        if (res.confirm && res.content) {
-          var users = that.data.users;
-          var newUser = {
-            id: Date.now(),
-            name: res.content,
-            avatar: '/images/avatar' + ((users.length % 4) + 1) + '.png',
-            points: 0
-          };
-          users.push(newUser);
-          wx.setStorageSync('users', users);
-          that.setData({ users: users });
-        }
-      }
+    wx.showToast({
+      title: '请联系管理员添加用户',
+      icon: 'none'
     });
   }
 });

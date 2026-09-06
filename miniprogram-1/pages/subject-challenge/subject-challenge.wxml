@@ -1,78 +1,136 @@
 <view class="container {{subjectClass}}">
-  <!-- 顶部信息 -->
-  <view class="header">
-    <view class="subject-badge">
-      <text class="subject-icon">{{subjectIcon}}</text>
-      <text class="subject-name">{{subjectName}}</text>
-    </view>
-    <view class="progress-info">
-      <text class="progress-text">{{currentQuestion + 1}}/{{totalQuestions}}</text>
-    </view>
-  </view>
-
-  <!-- 题目卡片 -->
-  <view class="question-card">
-    <view class="question-header">
-      <text class="question-type-badge">{{currentQuestionData.type === 'choice' ? '选择题' : '填空题'}}</text>
-      <text class="question-number">第{{currentQuestion + 1}}题</text>
-    </view>
-
-    <view class="question-content">
-      <text class="question-text">{{currentQuestionData.question}}</text>
-    </view>
-
-    <!-- 选择题选项 -->
-    <view wx:if="{{currentQuestionData.type === 'choice'}}" class="options-list">
-      <view
-        wx:for="{{currentQuestionData.options}}"
-        wx:key="index"
-        class="option-item {{answers[currentQuestion] === index ? 'selected' : ''}}"
-        bindtap="selectOption"
-        data-index="{{index}}">
-        <view class="option-label">{{optionLabels[index]}}</view>
-        <text class="option-text">{{item}}</text>
+  <!-- 未完成状态 -->
+  <view wx:if="{{!showResult}}">
+    <!-- 顶部信息 -->
+    <view class="header">
+      <view class="subject-badge">
+        <text class="subject-icon">{{subjectIcon}}</text>
+        <text class="subject-name">{{subjectName}}</text>
+      </view>
+      <view class="progress-info">
+        <text class="progress-text">{{currentQuestion + 1}}/{{totalQuestions}}</text>
       </view>
     </view>
 
-    <!-- 填空题输入框 -->
-    <view wx:else class="fill-blank-area">
-      <textarea
-        class="answer-input"
-        placeholder="请输入你的答案..."
-        value="{{answers[currentQuestion]}}"
-        bindinput="onAnswerInput"
-        maxlength="500"
-        auto-height />
-      <text class="char-count">{{currentAnswerLength}}/500</text>
+    <!-- 题目卡片 -->
+    <view class="question-card">
+      <view class="question-header">
+        <text class="question-type-badge">{{currentQuestionData.type === 'choice' ? '选择题' : '填空题'}}</text>
+        <text class="question-number">第{{currentQuestion + 1}}题</text>
+      </view>
+
+      <view class="question-content">
+        <text class="question-text">{{currentQuestionData.question}}</text>
+      </view>
+
+      <!-- 选择题选项 -->
+      <view wx:if="{{currentQuestionData.type === 'choice'}}" class="options-list">
+        <view
+          wx:for="{{currentQuestionData.options}}"
+          wx:key="index"
+          class="option-item {{answers[currentQuestion] === index ? 'selected' : ''}}"
+          bindtap="selectOption"
+          data-index="{{index}}">
+          <view class="option-label">{{optionLabels[index]}}</view>
+          <text class="option-text">{{item}}</text>
+        </view>
+      </view>
+
+      <!-- 填空题输入框 -->
+      <view wx:else class="fill-blank-area">
+        <textarea
+          class="answer-input"
+          placeholder="请输入你的答案..."
+          value="{{answers[currentQuestion]}}"
+          bindinput="onAnswerInput"
+          maxlength="500"
+          auto-height />
+        <text class="char-count">{{currentAnswerLength}}/500</text>
+      </view>
+
+      <!-- 反馈信息 -->
+      <view wx:if="{{currentFeedback}}" class="feedback-box {{isCorrect ? 'correct' : 'wrong'}}">
+        <text class="feedback-text">{{currentFeedback}}</text>
+      </view>
+
+      <!-- 解析 -->
+      <view wx:if="{{showAnalysis}}" class="analysis-box">
+        <view class="analysis-title">💡 题目解析</view>
+        <text class="analysis-text">{{currentQuestionData.analysis}}</text>
+
+        <view wx:if="{{showCorrectAnswer}}" class="correct-answer-box">
+          <text class="correct-answer-label">正确答案：</text>
+          <text class="correct-answer-value">{{currentQuestionData.correctAnswer}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部按钮 -->
+    <view class="action-buttons">
+      <!-- 如果还没提交当前题 -->
+      <button
+        wx:if="{{!showAnalysis}}"
+        class="btn-submit"
+        bindtap="submitCurrentAnswer">
+        提交答案
+      </button>
+
+      <!-- 如果已经显示反馈 -->
+      <view wx:else class="button-group">
+        <button
+          wx:if="{{currentQuestion > 0}}"
+          class="btn-secondary"
+          bindtap="prevQuestion">
+          上一题
+        </button>
+
+        <!-- 如果答错且第一次，显示重试按钮 -->
+        <button
+          wx:if="{{!isCorrect && !showCorrectAnswer}}"
+          class="btn-retry"
+          bindtap="retryQuestion">
+          重新作答
+        </button>
+
+        <!-- 下一题或完成 -->
+        <button
+          wx:if="{{currentQuestion < totalQuestions - 1}}"
+          class="btn-primary"
+          bindtap="nextQuestion">
+          下一题
+        </button>
+
+        <button
+          wx:else
+          class="btn-finish"
+          bindtap="nextQuestion">
+          完成挑战
+        </button>
+      </view>
+    </view>
+
+    <!-- 进度条 -->
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{progress}}%"></view>
     </view>
   </view>
 
-  <!-- 底部按钮 -->
-  <view class="action-buttons">
-    <button
-      wx:if="{{currentQuestion > 0}}"
-      class="btn-secondary"
-      bindtap="prevQuestion">
-      上一题
-    </button>
+  <!-- 完成结果页 -->
+  <view wx:else class="result-container">
+    <view class="result-icon">🎉</view>
+    <text class="result-title">挑战完成！</text>
 
-    <button
-      wx:if="{{currentQuestion < totalQuestions - 1}}"
-      class="btn-primary"
-      bindtap="nextQuestion">
-      下一题
-    </button>
+    <view class="result-stats">
+      <view class="stat-item">
+        <text class="stat-label">正确题数</text>
+        <text class="stat-value">{{correctCount}}/{{totalQuestions}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">获得积分</text>
+        <text class="stat-value">+{{totalPoints}}</text>
+      </view>
+    </view>
 
-    <button
-      wx:else
-      class="btn-submit"
-      bindtap="submitAllAnswers">
-      提交答案
-    </button>
-  </view>
-
-  <!-- 进度条 -->
-  <view class="progress-bar">
-    <view class="progress-fill" style="width: {{progress}}%"></view>
+    <button class="btn-back" bindtap="backToHome">返回首页</button>
   </view>
 </view>

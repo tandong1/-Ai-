@@ -1,4 +1,5 @@
-var app = getApp();
+const http = require('../../utils/http.js');
+const app = getApp();
 
 Page({
   data: {
@@ -17,11 +18,12 @@ Page({
 
   onShow: function() {
     this.loadProgress();
+    this.updatePoints();
   },
 
   initPage: function() {
-    var date = new Date();
-    var currentDate = date.getMonth() + 1 + '月' + date.getDate() + '日';
+    const date = new Date();
+    const currentDate = date.getMonth() + 1 + '月' + date.getDate() + '日';
 
     this.setData({
       currentDate: currentDate,
@@ -32,8 +34,8 @@ Page({
   },
 
   loadProgress: function() {
-    var todayKey = this.getTodayKey();
-    var progress = wx.getStorageSync(todayKey + '_progress') || {
+    const todayKey = this.getTodayKey();
+    const progress = wx.getStorageSync(todayKey + '_progress') || {
       math: false,
       english: false,
       chinese: false
@@ -44,15 +46,31 @@ Page({
     });
   },
 
+  updatePoints: function() {
+    const user = wx.getStorageSync('currentUser');
+    if (user && user.totalPoints !== undefined) {
+      app.globalData.totalPoints = user.totalPoints;
+      this.setData({
+        totalPoints: user.totalPoints
+      });
+    }
+  },
+
   getTodayKey: function() {
-    var date = new Date();
+    const date = new Date();
     return 'challenge_' + date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + date.getDate();
   },
 
   goToSubject: function(e) {
-    var subject = e.currentTarget.dataset.subject;
+    const subject = e.currentTarget.dataset.subject;
+    const subjectMap = {
+      'math': 'math',
+      'english': 'english',
+      'chinese': 'chinese'
+    };
+
     wx.navigateTo({
-      url: '/pages/subject-challenge/subject-challenge?subject=' + subject
+      url: '/pages/subject-challenge/subject-challenge?subject=' + subjectMap[subject]
     });
   }
 });
