@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -78,6 +79,7 @@ public class QuestionServiceImpl implements QuestionService {
         int totalQuestions = submitDTO.getAnswers().size();
         int correctCount = 0;
         int pointsEarned = 0;
+        List<SubmitResultVO.QuestionResultDetail> details = new ArrayList<>();
 
         for (SubmitAnswerDTO.AnswerItem answerItem : submitDTO.getAnswers()) {
             Question question = questionMapper.selectById(answerItem.getQuestionId());
@@ -95,6 +97,15 @@ public class QuestionServiceImpl implements QuestionService {
                 attemptCount = 1;
             }
 
+            // 计算本题得分
+            int questionPoints = 0;
+            if (isCorrect) {
+                correctCount++;
+                questionPoints = calculatePoints(attemptCount);
+                pointsEarned += questionPoints;
+            }
+
+            // 保存答题记录
             QuestionRecord record = new QuestionRecord();
             record.setUserId(userId);
             record.setQuestionId(question.getId());
@@ -108,14 +119,25 @@ public class QuestionServiceImpl implements QuestionService {
 
             questionRecordMapper.insert(record);
 
-            if (isCorrect) {
-                correctCount++;
-                int questionPoints = calculatePoints(attemptCount);
-                pointsEarned += questionPoints;
-            }
-
+            // 标记题目已使用
             question.setIsUsed(true);
             questionMapper.updateById(question);
+
+            // 构建详细结果
+            SubmitResultVO.QuestionResultDetail detail = new SubmitResultVO.QuestionResultDetail();
+            detail.setQuestionId(question.getId());
+            detail.setQuestionType(question.getQuestionType());
+            detail.setQuestionText(question.getQuestionText());
+            detail.setOptions(question.getOptions());
+            detail.setUserAnswer(answerItem.getUserAnswer());
+            detail.setCorrectAnswer(question.getCorrectAnswer());
+            detail.setIsCorrect(isCorrect);
+            detail.setAnalysis(question.getAnalysis());
+            detail.setAttemptCount(attemptCount);
+            detail.setPointsEarned(questionPoints);
+            detail.setKnowledgePoint(question.getKnowledgePoint());
+
+            details.add(detail);
         }
 
         if (pointsEarned > 0) {
@@ -129,8 +151,9 @@ public class QuestionServiceImpl implements QuestionService {
         result.setCorrectCount(correctCount);
         result.setPointsEarned(pointsEarned);
         result.setNewBalance(user.getTotalPoints() + pointsEarned);
+        result.setDetails(details);
 
-        log.info("提交结果: userId={}, correct={}/{}, points=+{}", 
+        log.info("提交结果: userId={}, correct={}/{}, points=+{}",
                 userId, correctCount, totalQuestions, pointsEarned);
 
         return result;
