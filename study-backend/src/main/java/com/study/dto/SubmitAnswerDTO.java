@@ -17,7 +17,6 @@ public class SubmitAnswerDTO {
     public static class AnswerItem {
         private Long questionId;
         private String userAnswer;
-        private Boolean isCorrect;
-        private Integer attemptCount;
+        private Integer attemptCount;  // 尝试次数（前端记录）
     }
 }

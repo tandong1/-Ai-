@@ -85,8 +85,15 @@ public class QuestionServiceImpl implements QuestionService {
                 throw new BusinessException("题目不存在: " + answerItem.getQuestionId());
             }
 
-            Boolean isCorrect = answerItem.getIsCorrect();
+            // 后端判断答案是否正确
+            String userAnswer = normalizeAnswer(answerItem.getUserAnswer());
+            String correctAnswer = normalizeAnswer(question.getCorrectAnswer());
+            boolean isCorrect = userAnswer.equals(correctAnswer);
+
             Integer attemptCount = answerItem.getAttemptCount();
+            if (attemptCount == null || attemptCount <= 0) {
+                attemptCount = 1;
+            }
 
             QuestionRecord record = new QuestionRecord();
             record.setUserId(userId);
@@ -97,7 +104,7 @@ public class QuestionServiceImpl implements QuestionService {
             record.setCorrectAnswer(question.getCorrectAnswer());
             record.setAnalysis(question.getAnalysis());
             record.setAttemptCount(attemptCount);
-            record.setFirstAttemptCorrect(attemptCount != null && attemptCount == 1 && isCorrect);
+            record.setFirstAttemptCorrect(attemptCount == 1 && isCorrect);
 
             questionRecordMapper.insert(record);
 
@@ -146,6 +153,23 @@ public class QuestionServiceImpl implements QuestionService {
         } else {
             return 2;
         }
+    }
+
+    /**
+     * 标准化答案，用于比较
+     * - 去除首尾空格
+     * - 转为小写（英文）
+     * - 去除所有空格（数学公式）
+     */
+    private String normalizeAnswer(String answer) {
+        if (answer == null) {
+            return "";
+        }
+        // 去除首尾空格，转小写
+        answer = answer.trim().toLowerCase();
+        // 去除所有空格（方便数学答案比较，如 "1/2" 和 " 1 / 2 "）
+        answer = answer.replaceAll("\\s+", "");
+        return answer;
     }
 
     @Override
