@@ -33,4 +33,9 @@ public interface QuestionService {
      * 获取答题历史记录
      */
     List<QuestionRecordVO> getQuestionRecords(Long userId, String subject, LocalDate startDate, LocalDate endDate);
+
+    /**
+     * 获取某一天某个科目的答题详情
+     */
+    CompletedQuestionsVO getDaySubjectRecords(Long userId, LocalDate date, String subject);
 }

@@ -29,7 +29,7 @@
       <text class="list-title">答题记录</text>
     </view>
 
-    <view class="history-item" wx:for="{{historyList}}" wx:key="timestamp">
+    <view class="history-item" wx:for="{{historyList}}" wx:key="date" bindtap="viewDetail" data-date="{{item.date}}" data-subject="{{item.subject}}">
       <view class="item-header">
         <view class="date-badge">
           <text class="calendar-icon">📅</text>

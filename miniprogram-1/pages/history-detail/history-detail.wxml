@@ -1,0 +1,94 @@
+<view class="container">
+  <!-- 头部信息 -->
+  <view class="header">
+    <view class="header-top">
+      <text class="subject-icon">{{subject === 'math' ? '📐' : subject === 'english' ? '📚' : '📖'}}</text>
+      <text class="subject-name">{{subjectName}}</text>
+    </view>
+    <text class="date-text">{{date}}</text>
+
+    <!-- 统计信息 -->
+    <view class="stats">
+      <view class="stat-item">
+        <text class="stat-label">正确</text>
+        <text class="stat-value correct">{{correctCount}}</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-label">错误</text>
+        <text class="stat-value wrong">{{totalQuestions - correctCount}}</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-label">正确率</text>
+        <text class="stat-value">{{accuracy}}%</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 题目列表 -->
+  <view class="questions-list">
+    <view class="question-card" wx:for="{{questions}}" wx:key="questionId">
+      <!-- 题目头部 -->
+      <view class="question-header">
+        <view class="question-number">
+          <text>第 {{index + 1}} 题</text>
+          <text class="question-type">{{item.questionType === 'choice' ? '选择题' : '填空题'}}</text>
+        </view>
+        <view class="result-badge {{item.isCorrect ? 'correct' : 'wrong'}}">
+          <text>{{item.isCorrect ? '✓ 正确' : '✗ 错误'}}</text>
+        </view>
+      </view>
+
+      <!-- 题目内容 -->
+      <view class="question-content">
+        <text class="question-text">{{item.questionText}}</text>
+      </view>
+
+      <!-- 选项（仅选择题） -->
+      <view class="options" wx:if="{{item.questionType === 'choice'}}">
+        <view
+          class="option-item {{opt === item.correctAnswer ? 'option-correct' : ''}} {{opt === item.userAnswer && !item.isCorrect ? 'option-wrong' : ''}}"
+          wx:for="{{item.options}}"
+          wx:key="*this"
+          wx:for-item="opt"
+          wx:for-index="optIndex">
+          <text class="option-label">{{['A', 'B', 'C', 'D'][optIndex]}}.</text>
+          <text class="option-text">{{opt}}</text>
+          <text class="option-mark" wx:if="{{opt === item.correctAnswer}}">✓</text>
+          <text class="option-mark wrong-mark" wx:if="{{opt === item.userAnswer && !item.isCorrect}}">✗</text>
+        </view>
+      </view>
+
+      <!-- 答案区域 -->
+      <view class="answer-section">
+        <view class="answer-row">
+          <text class="answer-label">你的答案：</text>
+          <text class="answer-value {{item.isCorrect ? 'correct-text' : 'wrong-text'}}">
+            {{item.userAnswer}}
+          </text>
+        </view>
+        <view class="answer-row" wx:if="{{!item.isCorrect}}">
+          <text class="answer-label">正确答案：</text>
+          <text class="answer-value correct-text">{{item.correctAnswer}}</text>
+        </view>
+        <view class="answer-row" wx:if="{{item.attemptCount > 1}}">
+          <text class="answer-label">尝试次数：</text>
+          <text class="answer-value">{{item.attemptCount}} 次</text>
+        </view>
+      </view>
+
+      <!-- 解析 -->
+      <view class="analysis" wx:if="{{item.analysis}}">
+        <text class="analysis-label">💡 解析</text>
+        <text class="analysis-text">{{item.analysis}}</text>
+      </view>
+
+      <!-- 知识点 -->
+      <view class="knowledge-point" wx:if="{{item.knowledgePoint}}">
+        <text class="kp-icon">📌</text>
+        <text class="kp-text">{{item.knowledgePoint}}</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -111,5 +111,14 @@ Page({
           avgAccuracy: 0
         });
       });
+  },
+
+  viewDetail: function(e) {
+    const date = e.currentTarget.dataset.date;
+    const subject = e.currentTarget.dataset.subject;
+
+    wx.navigateTo({
+      url: `/pages/history-detail/history-detail?date=${date}&subject=${subject}`
+    });
   }
 });

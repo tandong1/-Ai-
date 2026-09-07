@@ -77,4 +77,18 @@ public class QuestionController {
         List<QuestionRecordVO> records = questionService.getQuestionRecords(userId, subject, startDate, endDate);
         return Result.success(records);
     }
+
+    /**
+     * 获取某一天某个科目的答题详情
+     * @param date 日期
+     * @param subject 科目: math/english/chinese
+     */
+    @GetMapping("/records/detail")
+    public Result<CompletedQuestionsVO> getDaySubjectRecords(
+            @RequestAttribute("userId") Long userId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam String subject) {
+        CompletedQuestionsVO detail = questionService.getDaySubjectRecords(userId, date, subject);
+        return Result.success(detail);
+    }
 }

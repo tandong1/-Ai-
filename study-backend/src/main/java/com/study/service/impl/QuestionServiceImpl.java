@@ -300,4 +300,61 @@ public class QuestionServiceImpl implements QuestionService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public CompletedQuestionsVO getDaySubjectRecords(Long userId, LocalDate date, String subject) {
+        log.info("获取答题详情: userId={}, date={}, subject={}", userId, date, subject);
+
+        LambdaQueryWrapper<QuestionRecord> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(QuestionRecord::getUserId, userId)
+               .eq(QuestionRecord::getSubject, subject)
+               .apply("DATE(answered_at) = {0}", date)
+               .orderByAsc(QuestionRecord::getQuestionId);
+
+        List<QuestionRecord> records = questionRecordMapper.selectList(wrapper);
+
+        if (records.isEmpty()) {
+            throw new BusinessException("该日期没有答题记录");
+        }
+
+        // 获取题目详情
+        List<Long> questionIds = records.stream()
+                .map(QuestionRecord::getQuestionId)
+                .collect(Collectors.toList());
+
+        Map<Long, Question> questionMap = questionMapper.selectBatchIds(questionIds).stream()
+                .collect(Collectors.toMap(Question::getId, q -> q));
+
+        // 构建详情列表
+        List<CompletedQuestionsVO.CompletedQuestionDetailVO> details = records.stream()
+                .map(record -> {
+                    Question question = questionMap.get(record.getQuestionId());
+                    if (question == null) {
+                        return null;
+                    }
+
+                    CompletedQuestionsVO.CompletedQuestionDetailVO detail = new CompletedQuestionsVO.CompletedQuestionDetailVO();
+                    detail.setQuestionId(question.getId());
+                    detail.setQuestionType(question.getQuestionType());
+                    detail.setQuestionText(question.getQuestionText());
+                    detail.setOptions(question.getOptions());
+                    detail.setUserAnswer(record.getUserAnswer());
+                    detail.setCorrectAnswer(record.getCorrectAnswer());
+                    detail.setIsCorrect(record.getIsCorrect());
+                    detail.setAnalysis(record.getAnalysis());
+                    detail.setAttemptCount(record.getAttemptCount());
+                    detail.setKnowledgePoint(question.getKnowledgePoint());
+
+                    return detail;
+                })
+                .filter(detail -> detail != null)
+                .collect(Collectors.toList());
+
+        CompletedQuestionsVO result = new CompletedQuestionsVO();
+        result.setSubject(subject);
+        result.setCompletedDate(date);
+        result.setQuestions(details);
+
+        return result;
+    }
 }
