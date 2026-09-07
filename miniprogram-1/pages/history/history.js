@@ -74,6 +74,7 @@ Page({
           }
 
           return {
+            key: `${item.date}_${item.subject}`, // 唯一标识
             date: item.date,
             subject: item.subject,
             totalQuestions: totalQuestions,
