@@ -265,8 +265,16 @@ Page({
       userAnswerValue = userAnswer;
     }
 
-    // 判断是否正确
-    const isCorrect = userAnswerValue === question.correctAnswer;
+    // 判断是否正确（使用规范化后的答案比较）
+    const isCorrect = this.normalizeAnswer(userAnswerValue) === this.normalizeAnswer(question.correctAnswer);
+
+    console.log('答案比对:', {
+      用户答案原始: userAnswerValue,
+      用户答案规范: this.normalizeAnswer(userAnswerValue),
+      正确答案原始: question.correctAnswer,
+      正确答案规范: this.normalizeAnswer(question.correctAnswer),
+      是否正确: isCorrect
+    });
 
     if (isCorrect) {
       // 答对了
@@ -527,6 +535,23 @@ Page({
         page.loadProgress && page.loadProgress();
       }
     });
+  },
+
+  /**
+   * 规范化答案用于比较（与后端逻辑保持一致）
+   * - 去除首尾空格
+   * - 转为小写
+   * - 去除所有空格
+   */
+  normalizeAnswer: function(answer) {
+    if (!answer) {
+      return '';
+    }
+    // 转字符串并去除首尾空格，转小写
+    answer = String(answer).trim().toLowerCase();
+    // 去除所有空格
+    answer = answer.replace(/\s+/g, '');
+    return answer;
   },
 
   backToHome: function() {
