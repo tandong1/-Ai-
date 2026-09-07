@@ -81,7 +81,8 @@ Page({
             correctCount: correctCount,
             accuracy: accuracy,
             level: level,
-            levelText: levelText
+            levelText: levelText,
+            earnedPoints: 1 // 完成科目统一1分
           };
         });
 
@@ -89,10 +90,13 @@ Page({
         historyList.sort((a, b) => b.date.localeCompare(a.date));
 
         // 计算总体统计
-        const totalDays = historyList.length;
+        // 累计天数：去重后的日期数量
+        const uniqueDates = [...new Set(historyList.map(item => item.date))];
+        const totalDays = uniqueDates.length;
+
         const totalQuestions = historyList.reduce((sum, item) => sum + item.totalQuestions, 0);
         const avgAccuracy = totalDays > 0
-          ? Math.round(historyList.reduce((sum, item) => sum + item.accuracy, 0) / totalDays)
+          ? Math.round(historyList.reduce((sum, item) => sum + item.accuracy, 0) / historyList.length)
           : 0;
 
         that.setData({
