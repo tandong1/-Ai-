@@ -482,6 +482,12 @@ Page({
         progress[that.data.subject] = true;
         wx.setStorageSync(todayKey + '_progress', progress);
 
+        console.log('保存进度:', {
+          todayKey: todayKey,
+          subject: that.data.subject,
+          progress: progress
+        });
+
         // 显示结果
         that.setData({
           showResult: true
@@ -492,6 +498,9 @@ Page({
           icon: 'success',
           duration: 2000
         });
+
+        // 通知首页刷新进度
+        that.notifyHomePageRefresh();
       })
       .catch(err => {
         console.log('=== 提交答案出错 ===');
@@ -510,7 +519,19 @@ Page({
     return 'challenge_' + date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + date.getDate();
   },
 
+  notifyHomePageRefresh: function() {
+    // 通知所有打开的daily-challenge页面刷新进度
+    const pages = getCurrentPages();
+    pages.forEach(page => {
+      if (page.route === 'pages/daily-challenge/daily-challenge') {
+        page.loadProgress && page.loadProgress();
+      }
+    });
+  },
+
   backToHome: function() {
+    // 返回前刷新首页进度
+    this.notifyHomePageRefresh();
     wx.navigateBack();
   },
 
