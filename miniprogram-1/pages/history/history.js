@@ -38,22 +38,24 @@ Page({
           return;
         }
 
-        // 按日期分组
-        const recordsByDate = {};
+        // 按日期和科目分组
+        const recordsByDateSubject = {};
         records.forEach(record => {
           const date = record.answeredAt.split('T')[0]; // 获取日期部分
-          if (!recordsByDate[date]) {
-            recordsByDate[date] = {
+          const key = `${date}_${record.subject}`; // 组合键：日期_科目
+
+          if (!recordsByDateSubject[key]) {
+            recordsByDateSubject[key] = {
               date: date,
               subject: record.subject,
               records: []
             };
           }
-          recordsByDate[date].records.push(record);
+          recordsByDateSubject[key].records.push(record);
         });
 
         // 转换为数组并计算统计
-        const historyList = Object.values(recordsByDate).map(item => {
+        const historyList = Object.values(recordsByDateSubject).map(item => {
           const totalQuestions = item.records.length;
           const correctCount = item.records.filter(r => r.isCorrect).length;
           const accuracy = totalQuestions > 0

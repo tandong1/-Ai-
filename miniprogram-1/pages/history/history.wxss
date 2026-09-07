@@ -98,6 +98,16 @@
   font-size: 28rpx;
   color: #333333;
   font-weight: 500;
+  margin-right: 16rpx;
+}
+
+.subject-tag {
+  font-size: 24rpx;
+  color: #6366f1;
+  background: rgba(99, 102, 241, 0.1);
+  padding: 4rpx 16rpx;
+  border-radius: 8rpx;
+  font-weight: 500;
 }
 
 .score-badge {

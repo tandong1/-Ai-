@@ -34,6 +34,7 @@
         <view class="date-badge">
           <text class="calendar-icon">📅</text>
           <text class="date-text">{{item.date}}</text>
+          <text class="subject-tag">{{item.subject === 'math' ? '数学' : item.subject === 'english' ? '英语' : '语文'}}</text>
         </view>
         <view class="score-badge score-{{item.level}}">
           <text>{{item.levelText}}</text>
