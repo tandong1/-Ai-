@@ -56,10 +56,18 @@
         </view>
       </view>
     </view>
+
+    <!-- 加载更多提示 -->
+    <view class="list-footer" wx:if="{{loading}}">
+      <text class="list-footer-text">加载中...</text>
+    </view>
+    <view class="list-footer" wx:elif="{{!hasMore}}">
+      <text class="list-footer-text">没有更多了</text>
+    </view>
   </view>
 
   <!-- 空状态 -->
-  <view class="empty-state" wx:else>
+  <view class="empty-state" wx:if="{{loaded && historyList.length === 0}}">
     <text class="empty-icon">📚</text>
     <text class="empty-text">还没有答题记录哦</text>
     <text class="empty-hint">完成每日挑战后会显示在这里</text>

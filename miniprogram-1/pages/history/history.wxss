@@ -199,4 +199,15 @@
   color: #9ca3af;
 }
 
+/* 列表底部加载提示 */
+.list-footer {
+  padding: 32rpx 0;
+  text-align: center;
+}
+
+.list-footer-text {
+  font-size: 26rpx;
+  color: #9ca3af;
+}
+
 

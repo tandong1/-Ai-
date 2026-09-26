@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "历史记录",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 100,
   "usingComponents": {}
 }

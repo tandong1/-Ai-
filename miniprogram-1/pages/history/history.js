@@ -1,123 +1,140 @@
 const http = require('../../utils/http.js');
 
+const PAGE_SIZE = 20;
+
 Page({
   data: {
     historyList: [],
     totalDays: 0,
     totalQuestions: 0,
-    avgAccuracy: 0
+    avgAccuracy: 0,
+    page: 0,          // 已加载到第几页，0表示还未加载
+    hasMore: true,
+    loading: false,
+    loaded: false     // 首屏是否已有结果，用于控制空状态
   },
 
-  onLoad() {
-    this.loadHistory();
-  },
-
+  // 首次进入时 onShow 也会触发，不需要再写 onLoad
   onShow() {
-    this.loadHistory();
+    this.refresh();
   },
 
-  loadHistory() {
+  onReachBottom() {
+    if (this.data.loading || !this.data.hasMore) {
+      return;
+    }
+    this.loadPage(this.data.page + 1);
+  },
+
+  onPullDownRefresh() {
+    this.refresh(true);
+  },
+
+  // 回到第一页并刷新统计，不清空旧列表，避免闪一下空状态
+  refresh(fromPullDown) {
+    this.loadSummary();
+    this.loadPage(1, fromPullDown);
+  },
+
+  loadSummary() {
     const that = this;
 
-    wx.showLoading({
-      title: '加载中...'
-    });
-
-    // 从后端获取答题记录
-    http.get('/questions/records', {})
-      .then(records => {
-        wx.hideLoading();
-
-        if (!records || records.length === 0) {
-          that.setData({
-            historyList: [],
-            totalDays: 0,
-            totalQuestions: 0,
-            avgAccuracy: 0
-          });
-          return;
-        }
-
-        // 按日期和科目分组
-        const recordsByDateSubject = {};
-        records.forEach(record => {
-          const date = record.answeredAt.split('T')[0]; // 获取日期部分
-          const key = `${date}_${record.subject}`; // 组合键：日期_科目
-
-          if (!recordsByDateSubject[key]) {
-            recordsByDateSubject[key] = {
-              date: date,
-              subject: record.subject,
-              records: []
-            };
-          }
-          recordsByDateSubject[key].records.push(record);
-        });
-
-        // 转换为数组并计算统计
-        const historyList = Object.values(recordsByDateSubject).map(item => {
-          const totalQuestions = item.records.length;
-          const correctCount = item.records.filter(r => r.isCorrect).length;
-          const accuracy = totalQuestions > 0
-            ? Math.round((correctCount / totalQuestions) * 100)
-            : 0;
-
-          let level = 'normal';
-          let levelText = '继续努力';
-
-          if (accuracy >= 80) {
-            level = 'excellent';
-            levelText = '优秀';
-          } else if (accuracy >= 60) {
-            level = 'good';
-            levelText = '良好';
-          }
-
-          return {
-            key: `${item.date}_${item.subject}`, // 唯一标识
-            date: item.date,
-            subject: item.subject,
-            totalQuestions: totalQuestions,
-            correctCount: correctCount,
-            accuracy: accuracy,
-            level: level,
-            levelText: levelText,
-            earnedPoints: 1 // 完成科目统一1分
-          };
-        });
-
-        // 按日期倒序排序
-        historyList.sort((a, b) => b.date.localeCompare(a.date));
-
-        // 计算总体统计
-        // 累计天数：去重后的日期数量
-        const uniqueDates = [...new Set(historyList.map(item => item.date))];
-        const totalDays = uniqueDates.length;
-
-        const totalQuestions = historyList.reduce((sum, item) => sum + item.totalQuestions, 0);
-        const avgAccuracy = totalDays > 0
-          ? Math.round(historyList.reduce((sum, item) => sum + item.accuracy, 0) / historyList.length)
-          : 0;
-
+    http.get('/questions/records/summary', {})
+      .then(summary => {
         that.setData({
-          historyList: historyList,
-          totalDays: totalDays,
-          totalQuestions: totalQuestions,
-          avgAccuracy: avgAccuracy
+          totalDays: summary.totalDays || 0,
+          totalQuestions: summary.totalQuestions || 0,
+          avgAccuracy: summary.avgAccuracy || 0
         });
       })
       .catch(err => {
-        wx.hideLoading();
+        console.error('加载历史统计失败:', err);
+      });
+  },
+
+  loadPage(page, fromPullDown) {
+    const that = this;
+
+    if (this.data.loading) {
+      if (fromPullDown) {
+        wx.stopPullDownRefresh();
+      }
+      return;
+    }
+
+    // 只有首屏才显示全屏loading，翻页用列表底部的提示
+    const firstLoad = !this.data.loaded;
+
+    this.setData({ loading: true });
+
+    if (firstLoad) {
+      wx.showLoading({
+        title: '加载中...'
+      });
+    }
+
+    http.get('/questions/records/groups', { page: page, pageSize: PAGE_SIZE })
+      .then(res => {
+        const cards = (res.list || []).map(group => that.buildCard(group));
+
+        that.setData({
+          historyList: page === 1 ? cards : that.data.historyList.concat(cards),
+          page: page,
+          hasMore: !!res.hasMore,
+          loading: false,
+          loaded: true
+        });
+      })
+      .catch(err => {
         console.error('加载历史记录失败:', err);
 
-        // 加载失败时显示空状态
+        // 首屏失败显示空状态；翻页失败保留已加载的内容，下次触底可重试
         that.setData({
-          historyList: [],
-          totalDays: 0,
-          totalQuestions: 0,
-          avgAccuracy: 0
+          historyList: page === 1 ? [] : that.data.historyList,
+          loading: false,
+          loaded: true
         });
+      })
+      .then(() => {
+        if (firstLoad) {
+          wx.hideLoading();
+        }
+        if (fromPullDown) {
+          wx.stopPullDownRefresh();
+        }
       });
+  },
+
+  // 把后端聚合好的「日期+科目」分组转成卡片
+  buildCard(group) {
+    const totalQuestions = group.totalQuestions || 0;
+    const correctCount = group.correctCount || 0;
+    const accuracy = totalQuestions > 0
+      ? Math.round((correctCount / totalQuestions) * 100)
+      : 0;
+
+    let level = 'normal';
+    let levelText = '继续努力';
+
+    if (accuracy >= 80) {
+      level = 'excellent';
+      levelText = '优秀';
+    } else if (accuracy >= 60) {
+      level = 'good';
+      levelText = '良好';
+    }
+
+    return {
+      key: `${group.recordDate}_${group.subject}`, // 唯一标识
+      date: group.recordDate,
+      subject: group.subject,
+      totalQuestions: totalQuestions,
+      correctCount: correctCount,
+      accuracy: accuracy,
+      level: level,
+      levelText: levelText,
+      earnedPoints: 1 // 完成科目统一1分
+    };
   },
 
   viewDetail: function(e) {

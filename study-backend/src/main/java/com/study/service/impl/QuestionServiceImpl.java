@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,6 +35,16 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionMapper questionMapper;
     private final QuestionRecordMapper questionRecordMapper;
     private final UserService userService;
+
+    /**
+     * 历史列表单页最大条数，防止客户端传入过大的 pageSize
+     */
+    private static final int MAX_PAGE_SIZE = 50;
+
+    /**
+     * 按id批量查题目时的单批大小
+     */
+    private static final int QUESTION_BATCH_SIZE = 100;
 
     @Override
     public DailyQuestionsVO getDailyQuestions(Long userId, String subject) {
@@ -213,9 +224,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .map(QuestionRecord::getQuestionId)
                 .collect(Collectors.toList());
 
-        List<Question> questions = questionMapper.selectBatchIds(questionIds);
-        Map<Long, Question> questionMap = questions.stream()
-                .collect(Collectors.toMap(Question::getId, q -> q));
+        Map<Long, Question> questionMap = loadQuestionMap(questionIds);
 
         List<CompletedQuestionsVO.CompletedQuestionDetailVO> details = records.stream()
                 .map(record -> {
@@ -270,7 +279,8 @@ public class QuestionServiceImpl implements QuestionService {
             wrapper.apply("DATE(answered_at) <= {0}", endDate);
         }
 
-        wrapper.orderByDesc(QuestionRecord::getAnsweredAt);
+        wrapper.orderByDesc(QuestionRecord::getAnsweredAt)
+               .orderByDesc(QuestionRecord::getId);
 
         List<QuestionRecord> records = questionRecordMapper.selectList(wrapper);
 
@@ -279,10 +289,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .distinct()
                 .collect(Collectors.toList());
 
-        Map<Long, Question> questionMap = questionIds.isEmpty() ? 
-            Map.of() : 
-            questionMapper.selectBatchIds(questionIds).stream()
-                .collect(Collectors.toMap(Question::getId, q -> q));
+        Map<Long, Question> questionMap = loadQuestionMap(questionIds);
 
         return records.stream()
                 .map(record -> {
@@ -299,6 +306,42 @@ public class QuestionServiceImpl implements QuestionService {
                     return vo;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public PageVO<RecordGroupVO> getRecordGroups(Long userId, String subject, int page, int pageSize) {
+        int current = Math.max(page, 1);
+        int size = Math.min(Math.max(pageSize, 1), MAX_PAGE_SIZE);
+
+        log.info("分页获取答题历史分组: userId={}, subject={}, page={}, pageSize={}",
+                userId, subject, current, size);
+
+        long total = questionRecordMapper.countRecordGroups(userId, subject);
+        if (total == 0) {
+            return PageVO.empty(current, size);
+        }
+
+        int offset = (current - 1) * size;
+        List<RecordGroupVO> groups = questionRecordMapper.selectRecordGroups(userId, subject, offset, size);
+
+        return PageVO.of(groups, total, current, size);
+    }
+
+    @Override
+    public RecordSummaryVO getRecordSummary(Long userId, String subject) {
+        log.info("获取答题历史统计: userId={}, subject={}", userId, subject);
+
+        RecordSummaryVO summary = questionRecordMapper.selectRecordSummary(userId, subject);
+
+        if (summary == null) {
+            summary = new RecordSummaryVO();
+            summary.setTotalDays(0);
+            summary.setTotalQuestions(0);
+            summary.setTotalCorrect(0);
+            summary.setAvgAccuracy(0);
+        }
+
+        return summary;
     }
 
     @Override
@@ -322,8 +365,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .map(QuestionRecord::getQuestionId)
                 .collect(Collectors.toList());
 
-        Map<Long, Question> questionMap = questionMapper.selectBatchIds(questionIds).stream()
-                .collect(Collectors.toMap(Question::getId, q -> q));
+        Map<Long, Question> questionMap = loadQuestionMap(questionIds);
 
         // 构建详情列表
         List<CompletedQuestionsVO.CompletedQuestionDetailVO> details = records.stream()
@@ -356,5 +398,28 @@ public class QuestionServiceImpl implements QuestionService {
         result.setQuestions(details);
 
         return result;
+    }
+
+    /**
+     * 按id批量加载题目
+     * 分批查询，避免 id 过多时 IN (...) 把单条SQL撑到超过 max_allowed_packet
+     */
+    private Map<Long, Question> loadQuestionMap(List<Long> questionIds) {
+        if (questionIds == null || questionIds.isEmpty()) {
+            return Map.of();
+        }
+
+        List<Long> distinctIds = questionIds.stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        Map<Long, Question> questionMap = new HashMap<>();
+        for (int i = 0; i < distinctIds.size(); i += QUESTION_BATCH_SIZE) {
+            List<Long> batch = distinctIds.subList(i, Math.min(i + QUESTION_BATCH_SIZE, distinctIds.size()));
+            questionMapper.selectBatchIds(batch)
+                    .forEach(question -> questionMap.put(question.getId(), question));
+        }
+
+        return questionMap;
     }
 }
