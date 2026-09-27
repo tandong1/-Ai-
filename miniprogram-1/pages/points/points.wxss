@@ -297,6 +297,13 @@
   color: #9ca3af;
 }
 
+.achievement-meta {
+  display: block;
+  margin-top: 6rpx;
+  font-size: 20rpx;
+  color: #c4c8d0;
+}
+
 .lock-overlay {
   position: absolute;
   top: 0;

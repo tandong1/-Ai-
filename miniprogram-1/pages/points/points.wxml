@@ -71,13 +71,15 @@
       <view
         class="achievement-item {{item.unlocked ? 'unlocked' : 'locked'}}"
         wx:for="{{achievements}}"
-        wx:key="id"
+        wx:key="type"
       >
         <view class="achievement-icon">
           <text>{{item.icon}}</text>
         </view>
         <text class="achievement-name">{{item.name}}</text>
         <text class="achievement-desc">{{item.desc}}</text>
+        <text class="achievement-meta" wx:if="{{item.unlockedDate}}">{{item.unlockedDate}} 解锁</text>
+        <text class="achievement-meta" wx:elif="{{item.progressText}}">{{item.progressText}}</text>
         <view class="lock-overlay" wx:if="{{!item.unlocked}}">
           <text class="lock-icon">🔒</text>
         </view>

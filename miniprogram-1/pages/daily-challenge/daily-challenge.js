@@ -40,20 +40,40 @@ Page({
       app.globalData.totalPoints = totalPoints;
     }
 
-    this.loadProgress();
+    // 进度由 onShow 统一加载，这里不重复请求
   },
 
   loadProgress: function() {
-    const todayKey = this.getTodayKey();
-    const progress = wx.getStorageSync(todayKey + '_progress') || {
-      math: false,
-      english: false,
-      chinese: false
-    };
+    const that = this;
 
-    this.setData({
-      todayProgress: progress
-    });
+    // 先用本地缓存让界面立刻有内容（乐观显示），再用后端结果覆盖
+    const cached = wx.getStorageSync(this.getProgressKey());
+    if (cached) {
+      this.setData({
+        todayProgress: {
+          math: !!cached.math,
+          english: !!cached.english,
+          chinese: !!cached.chinese
+        }
+      });
+    }
+
+    // 后端 question_records 才是权威：换设备、清缓存后也能正确显示已完成
+    http.get('/questions/daily/progress', {})
+      .then(progress => {
+        that.setData({
+          todayProgress: {
+            math: !!progress.math,
+            english: !!progress.english,
+            chinese: !!progress.chinese
+          }
+        });
+        wx.setStorageSync(that.getProgressKey(), that.data.todayProgress);
+      })
+      .catch(err => {
+        console.error('加载今日进度失败:', err);
+        // 失败时沿用缓存值，不要把已完成回退成未完成
+      });
   },
 
   updatePoints: function() {
@@ -66,9 +86,13 @@ Page({
     }
   },
 
-  getTodayKey: function() {
+  // 缓存 key 按用户隔离：一台设备给多个孩子用时不会串号
+  getProgressKey: function() {
+    const userId = wx.getStorageSync('currentUserId') || 'unknown';
     const date = new Date();
-    return 'challenge_' + date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + date.getDate();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    return 'challenge_' + userId + '_' + date.getFullYear() + '-' + month + '-' + day + '_progress';
   },
 
   goToSubject: function(e) {

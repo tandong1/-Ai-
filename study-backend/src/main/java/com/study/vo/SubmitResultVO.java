@@ -11,6 +11,7 @@ public class SubmitResultVO {
     private Integer pointsEarned;
     private Integer newBalance;
     private List<QuestionResultDetail> details;  // 每道题的详细结果
+    private List<AchievementVO> newAchievements; // 本次新解锁的成就，没有则为空列表
 
     @Data
     public static class QuestionResultDetail {

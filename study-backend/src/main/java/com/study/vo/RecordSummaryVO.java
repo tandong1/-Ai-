@@ -27,4 +27,9 @@ public class RecordSummaryVO {
      * 平均正确率（各「日期+科目」正确率的平均值，百分比整数）
      */
     private Integer avgAccuracy;
+
+    /**
+     * 是否有过「单次全对」（某个日期+科目正确率100%）
+     */
+    private Boolean hasPerfect;
 }

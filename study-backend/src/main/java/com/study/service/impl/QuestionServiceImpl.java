@@ -8,6 +8,7 @@ import com.study.entity.User;
 import com.study.common.BusinessException;
 import com.study.mapper.QuestionMapper;
 import com.study.mapper.QuestionRecordMapper;
+import com.study.service.AchievementService;
 import com.study.service.QuestionService;
 import com.study.service.UserService;
 import com.study.vo.*;
@@ -35,6 +36,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionMapper questionMapper;
     private final QuestionRecordMapper questionRecordMapper;
     private final UserService userService;
+    private final AchievementService achievementService;
 
     /**
      * 历史列表单页最大条数，防止客户端传入过大的 pageSize
@@ -155,6 +157,9 @@ public class QuestionServiceImpl implements QuestionService {
         int newTotalPoints = user.getTotalPoints() + pointsEarned;
         userService.updateUserPoints(userId, newTotalPoints);
 
+        // 积分结算之后再评估成就，这样「积分大户」当次提交就能解锁
+        List<AchievementVO> newAchievements = achievementService.evaluateAndUnlock(userId);
+
         SubmitResultVO result = new SubmitResultVO();
         result.setSubject(submitDTO.getSubject());
         result.setTotalQuestions(totalQuestions);
@@ -162,6 +167,7 @@ public class QuestionServiceImpl implements QuestionService {
         result.setPointsEarned(pointsEarned);
         result.setNewBalance(newTotalPoints);
         result.setDetails(details);
+        result.setNewAchievements(newAchievements);
 
         log.info("提交结果: userId={}, correct={}/{}, points=+{}, details_size={}",
                 userId, correctCount, totalQuestions, pointsEarned, details.size());
@@ -325,6 +331,26 @@ public class QuestionServiceImpl implements QuestionService {
         List<RecordGroupVO> groups = questionRecordMapper.selectRecordGroups(userId, subject, offset, size);
 
         return PageVO.of(groups, total, current, size);
+    }
+
+    @Override
+    public DailyProgressVO getDailyProgress(Long userId) {
+        log.info("获取今日完成状态: userId={}", userId);
+
+        List<String> subjects = questionRecordMapper.selectTodaySubjects(userId);
+
+        DailyProgressVO progress = new DailyProgressVO();
+        for (String subject : subjects) {
+            if ("math".equals(subject)) {
+                progress.setMath(true);
+            } else if ("english".equals(subject)) {
+                progress.setEnglish(true);
+            } else if ("chinese".equals(subject)) {
+                progress.setChinese(true);
+            }
+        }
+
+        return progress;
     }
 
     @Override

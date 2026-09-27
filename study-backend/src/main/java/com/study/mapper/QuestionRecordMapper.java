@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -58,7 +59,8 @@ public interface QuestionRecordMapper extends BaseMapper<QuestionRecord> {
             "SELECT COALESCE(COUNT(DISTINCT g.record_date), 0) AS total_days, " +
             "       COALESCE(SUM(g.total_questions), 0)        AS total_questions, " +
             "       COALESCE(SUM(g.correct_count), 0)          AS total_correct, " +
-            "       COALESCE(ROUND(AVG(g.acc)), 0)             AS avg_accuracy " +
+            "       COALESCE(ROUND(AVG(g.acc)), 0)             AS avg_accuracy, " +
+            "       COALESCE(MAX(g.acc = 100), 0)              AS has_perfect " +
             "FROM ( " +
             "  SELECT DATE(answered_at) AS record_date, " +
             "         COUNT(*) AS total_questions, " +
@@ -72,4 +74,22 @@ public interface QuestionRecordMapper extends BaseMapper<QuestionRecord> {
             "</script>")
     RecordSummaryVO selectRecordSummary(@Param("userId") Long userId,
                                         @Param("subject") String subject);
+
+    /**
+     * 查询用户所有答题日期（去重、升序）
+     * 行数上限就是用户使用过的天数（几百行量级），连续天数在Java里算，
+     * 避免在SQL里写可读性很差的 gaps-and-islands
+     */
+    @Select("SELECT DISTINCT DATE(answered_at) FROM question_records " +
+            "WHERE user_id = #{userId} ORDER BY 1")
+    List<LocalDate> selectDistinctAnswerDates(@Param("userId") Long userId);
+
+    /**
+     * 查询今天有答题记录的科目
+     * 「今天」以数据库时区为准（容器与MySQL均配置为 Asia/Shanghai），
+     * 避免客户端时区或系统时间造成偏差
+     */
+    @Select("SELECT DISTINCT subject FROM question_records " +
+            "WHERE user_id = #{userId} AND DATE(answered_at) = CURDATE()")
+    List<String> selectTodaySubjects(@Param("userId") Long userId);
 }

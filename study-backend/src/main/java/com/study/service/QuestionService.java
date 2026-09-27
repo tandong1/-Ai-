@@ -2,6 +2,7 @@ package com.study.service;
 
 import com.study.dto.SubmitAnswerDTO;
 import com.study.vo.CompletedQuestionsVO;
+import com.study.vo.DailyProgressVO;
 import com.study.vo.DailyQuestionsVO;
 import com.study.vo.PageVO;
 import com.study.vo.QuestionRecordVO;
@@ -41,6 +42,11 @@ public interface QuestionService {
      * 分页获取答题历史（按「日期+科目」聚合，供历史列表下滑加载）
      */
     PageVO<RecordGroupVO> getRecordGroups(Long userId, String subject, int page, int pageSize);
+
+    /**
+     * 获取今日各科目完成状态
+     */
+    DailyProgressVO getDailyProgress(Long userId);
 
     /**
      * 获取答题历史总体统计

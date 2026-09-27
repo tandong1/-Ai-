@@ -4,6 +4,7 @@ import com.study.common.Result;
 import com.study.dto.SubmitAnswerDTO;
 import com.study.service.QuestionService;
 import com.study.vo.CompletedQuestionsVO;
+import com.study.vo.DailyProgressVO;
 import com.study.vo.DailyQuestionsVO;
 import com.study.vo.PageVO;
 import com.study.vo.QuestionRecordVO;
@@ -79,6 +80,17 @@ public class QuestionController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         List<QuestionRecordVO> records = questionService.getQuestionRecords(userId, subject, startDate, endDate);
         return Result.success(records);
+    }
+
+    /**
+     * 获取今日各科目完成状态
+     * 以服务端 question_records 为准，避免客户端缓存丢失后显示为未完成
+     */
+    @GetMapping("/daily/progress")
+    public Result<DailyProgressVO> getDailyProgress(
+            @RequestAttribute("userId") Long userId) {
+        DailyProgressVO progress = questionService.getDailyProgress(userId);
+        return Result.success(progress);
     }
 
     /**

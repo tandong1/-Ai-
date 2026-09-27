@@ -416,6 +416,18 @@ Page({
         console.log('=== 收到后端响应 ===');
         wx.hideLoading();
 
+        // 先落完成状态：放在最前面，避免后续任何逻辑异常导致漏写
+        const progressKey = that.getProgressKey();
+        const progress = wx.getStorageSync(progressKey) || {};
+        progress[that.data.subject] = true;
+        wx.setStorageSync(progressKey, progress);
+
+        console.log('保存进度:', {
+          progressKey: progressKey,
+          subject: that.data.subject,
+          progress: progress
+        });
+
         // ========== 调试日志开始 ==========
         console.log('=== 提交答案完整响应 ===');
         console.log('完整data:', JSON.stringify(data, null, 2));
@@ -484,18 +496,6 @@ Page({
           });
         }
 
-        // 保存今日完成状态
-        const todayKey = that.getTodayKey();
-        const progress = wx.getStorageSync(todayKey + '_progress') || {};
-        progress[that.data.subject] = true;
-        wx.setStorageSync(todayKey + '_progress', progress);
-
-        console.log('保存进度:', {
-          todayKey: todayKey,
-          subject: that.data.subject,
-          progress: progress
-        });
-
         // 显示结果
         that.setData({
           showResult: true
@@ -509,6 +509,9 @@ Page({
 
         // 通知首页刷新进度
         that.notifyHomePageRefresh();
+
+        // 有新解锁的成就就恭喜一下（等积分 toast 播完再弹）
+        that.showNewAchievements(data.newAchievements);
       })
       .catch(err => {
         console.log('=== 提交答案出错 ===');
@@ -522,9 +525,31 @@ Page({
       });
   },
 
-  getTodayKey: function() {
+  // 缓存 key 按用户隔离，格式需与 daily-challenge 的 getProgressKey 保持一致
+  getProgressKey: function() {
+    const userId = wx.getStorageSync('currentUserId') || 'unknown';
     const date = new Date();
-    return 'challenge_' + date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + date.getDate();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    return 'challenge_' + userId + '_' + date.getFullYear() + '-' + month + '-' + day + '_progress';
+  },
+
+  // 解锁新成就时恭喜一下；多个则合并成一条，避免连续弹窗
+  showNewAchievements: function(newAchievements) {
+    if (!newAchievements || newAchievements.length === 0) {
+      return;
+    }
+
+    const names = newAchievements.map(item => `${item.icon} ${item.name}`).join('、');
+
+    setTimeout(function() {
+      wx.showModal({
+        title: '🎉 解锁新成就',
+        content: names,
+        showCancel: false,
+        confirmText: '太棒了'
+      });
+    }, 2000);
   },
 
   notifyHomePageRefresh: function() {
