@@ -1,16 +1,16 @@
 .container {
   min-height: 100vh;
-  background: linear-gradient(180deg, #f0f4ff 0%, #ffffff 30%);
+  background: linear-gradient(180deg, #e8efff 0%, #ffffff 30%);
   padding-bottom: 40rpx;
 }
 
 /* 头部 */
 .header {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #315bd8 0%, #557ce0 100%);
   padding: 40rpx 30rpx 30rpx;
   color: #ffffff;
   border-radius: 0 0 40rpx 40rpx;
-  box-shadow: 0 8rpx 24rpx rgba(99, 102, 241, 0.3);
+  box-shadow: 0 8rpx 24rpx rgba(49, 91, 216, 0.3);
 }
 
 .header-top {
@@ -105,13 +105,13 @@
   gap: 16rpx;
   font-size: 28rpx;
   font-weight: 600;
-  color: #374151;
+  color: #35476b;
 }
 
 .question-type {
   font-size: 24rpx;
-  color: #6366f1;
-  background: rgba(99, 102, 241, 0.1);
+  color: #315bd8;
+  background: rgba(49, 91, 216, 0.1);
   padding: 4rpx 16rpx;
   border-radius: 8rpx;
 }
@@ -154,9 +154,9 @@
   align-items: center;
   padding: 20rpx;
   margin-bottom: 16rpx;
-  background: #f9fafb;
+  background: #f7f5ed;
   border-radius: 16rpx;
-  border: 2rpx solid #e5e7eb;
+  border: 2rpx solid #d5e0f3;
   position: relative;
 }
 
@@ -173,14 +173,14 @@
 .option-label {
   font-size: 28rpx;
   font-weight: 600;
-  color: #6366f1;
+  color: #315bd8;
   margin-right: 16rpx;
   min-width: 50rpx;
 }
 
 .option-text {
   font-size: 28rpx;
-  color: #374151;
+  color: #35476b;
   flex: 1;
   line-height: 1.6;
 }
@@ -197,7 +197,7 @@
 
 /* 答案区域 */
 .answer-section {
-  background: #f9fafb;
+  background: #f7f5ed;
   border-radius: 16rpx;
   padding: 24rpx;
   margin-bottom: 20rpx;
@@ -215,7 +215,7 @@
 
 .answer-label {
   font-size: 28rpx;
-  color: #6b7280;
+  color: #657594;
   min-width: 160rpx;
 }
 
@@ -259,7 +259,7 @@
 .knowledge-point {
   display: flex;
   align-items: center;
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(49, 91, 216, 0.08);
   border-radius: 12rpx;
   padding: 16rpx 20rpx;
 }
@@ -271,6 +271,15 @@
 
 .kp-text {
   font-size: 26rpx;
-  color: #4f46e5;
+  color: #2547a5;
   font-weight: 500;
 }
+
+
+/* 太空探索主题 */
+.container { background: #f0f5ff; padding: 24rpx 0 40rpx; }
+.header { background: #315bd8; border-radius: 24rpx; margin: 0 30rpx; box-shadow: 0 6rpx 0 #203a91; }
+.question-card { background: #ffffff; border: 2rpx solid #d5e0f3; box-shadow: none; }
+.question-number { flex-wrap: wrap; }
+.answer-row { align-items: flex-start; }
+.answer-value { flex: 1; min-width: 0; word-break: break-all; }

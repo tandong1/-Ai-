@@ -11,7 +11,7 @@
     <!-- Logo区域 -->
     <view class="logo-section">
       <view class="logo-icon">
-        <text class="icon-brain">🧠</text>
+        <text class="icon-brain">🚀</text>
         <view class="glow"></view>
       </view>
       <text class="app-name">小小学霸</text>
@@ -20,10 +20,10 @@
     <!-- 标语 -->
     <view class="slogan {{textShow ? 'text-show' : ''}}">
       <view class="slogan-line">
-        <text class="highlight">基于AI的</text>
+        <text class="highlight">星际任务，即将开启</text>
       </view>
       <view class="slogan-line">
-        <text class="main-text">自动学习管理</text>
+        <text class="main-text">向知识宇宙出发</text>
       </view>
     </view>
 

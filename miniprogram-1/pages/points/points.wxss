@@ -1,10 +1,10 @@
 /* 积分头部 */
 .points-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #315bd8 0%, #203a91 100%);
   border-radius: 32rpx;
   padding: 48rpx 40rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8rpx 24rpx rgba(49, 91, 216, 0.3);
 }
 
 .avatar-section {
@@ -196,7 +196,7 @@
 .level-desc {
   display: block;
   font-size: 26rpx;
-  color: #6b7280;
+  color: #657594;
 }
 
 .progress-section {
@@ -212,25 +212,25 @@
 
 .progress-label {
   font-size: 26rpx;
-  color: #6b7280;
+  color: #657594;
 }
 
 .progress-text {
   font-size: 28rpx;
-  color: #6366f1;
+  color: #315bd8;
   font-weight: 600;
 }
 
 .level-progress-bar {
   height: 16rpx;
-  background: #e5e7eb;
+  background: #d5e0f3;
   border-radius: 16rpx;
   overflow: hidden;
 }
 
 .level-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(90deg, #315bd8 0%, #203a91 100%);
   border-radius: 16rpx;
   transition: width 0.5s ease;
 }
@@ -255,7 +255,7 @@
 
 .section-subtitle {
   font-size: 26rpx;
-  color: #6b7280;
+  color: #657594;
 }
 
 .achievements-grid {
@@ -294,7 +294,7 @@
 .achievement-desc {
   display: block;
   font-size: 22rpx;
-  color: #9ca3af;
+  color: #7383a1;
 }
 
 .achievement-meta {
@@ -369,7 +369,7 @@
 .detail-time {
   display: block;
   font-size: 24rpx;
-  color: #9ca3af;
+  color: #7383a1;
 }
 
 .detail-points {
@@ -399,9 +399,22 @@
 .empty-text {
   display: block;
   font-size: 28rpx;
-  color: #6b7280;
+  color: #657594;
 }
 
 
 
 
+
+
+/* 太空探索主题 */
+.points-header { background: #315bd8; box-shadow: 0 6rpx 0 #203a91; border-radius: 24rpx; }
+.shop-entry { background: #ffe0b3; border: 2rpx solid #f5bf82; box-shadow: 0 5rpx 0 #f2cfaa; }
+.shop-title, .shop-desc, .arrow-icon { color: #74481f; }
+.level-card, .achievement-item, .detail-list, .empty-detail { background: #ffffff; border: 2rpx solid #d5e0f3; box-shadow: none; }
+.level-progress-fill { background: #5c83ed; }
+.achievements-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.achievement-item.locked { opacity: 1; background: #edf1f8; }
+.achievement-desc, .achievement-meta { color: #657594; }
+.lock-overlay { top: 12rpx; right: 12rpx; left: auto; bottom: auto; background: transparent; }
+.lock-icon { font-size: 24rpx; }

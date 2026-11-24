@@ -1,7 +1,7 @@
 .splash-container {
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #315bd8 0%, #203a91 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -260,3 +260,15 @@
   letter-spacing: 4rpx;
   text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
 }
+
+
+/* 太空探索主题 */
+.splash-container { background: #e3ebff; }
+.app-name { color: #1f2e52; text-shadow: none; }
+.highlight { color: #315bd8; text-shadow: none; }
+.main-text { color: #1f2e52; background: none; -webkit-text-fill-color: #1f2e52; text-shadow: none; }
+.powered-by { color: #52678f; text-shadow: none; }
+.circle { background: rgba(92,131,237,.14); border: 2rpx solid rgba(49,91,216,.12); }
+.icon-brain { animation: none; filter: none; }
+.star { animation: none; }
+.footer { bottom: calc(60rpx + env(safe-area-inset-bottom)); }

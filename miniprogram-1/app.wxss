@@ -1,6 +1,6 @@
 /* 全局样式 */
 page {
-  background-color: #f5f7fa;
+  background-color: #f0f5ff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
 }
 
@@ -21,22 +21,30 @@ page {
 
 /* 按钮样式 */
 .primary-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #315bd8 0%, #203a91 100%);
   color: #ffffff;
   border-radius: 48rpx;
   padding: 28rpx 48rpx;
   font-size: 32rpx;
   font-weight: 600;
   border: none;
-  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8rpx 24rpx rgba(49, 91, 216, 0.3);
 }
 
 .secondary-btn {
-  background: #f0f4ff;
-  color: #6366f1;
+  background: #e8efff;
+  color: #315bd8;
   border-radius: 48rpx;
   padding: 28rpx 48rpx;
   font-size: 32rpx;
   font-weight: 600;
   border: none;
 }
+
+
+/* 太空探索主题 */
+page { color: #1f2e52; line-height: 1.5; }
+.container { box-sizing: border-box; padding-bottom: calc(40rpx + env(safe-area-inset-bottom)); }
+button::after { border: none; }
+.primary-btn { background: #315bd8; border-radius: 20rpx; box-shadow: 0 6rpx 0 #203a91; }
+.secondary-btn { background: #e8efff; border-radius: 20rpx; }

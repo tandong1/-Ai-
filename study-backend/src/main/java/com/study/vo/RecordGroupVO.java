@@ -9,6 +9,7 @@ import java.time.LocalDate;
  */
 @Data
 public class RecordGroupVO {
+    private Integer earnedPoints;
 
     /**
      * 答题日期

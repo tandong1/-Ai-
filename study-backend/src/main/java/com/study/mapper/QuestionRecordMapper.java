@@ -85,11 +85,44 @@ public interface QuestionRecordMapper extends BaseMapper<QuestionRecord> {
     List<LocalDate> selectDistinctAnswerDates(@Param("userId") Long userId);
 
     /**
-     * 查询今天有答题记录的科目
-     * 「今天」以数据库时区为准（容器与MySQL均配置为 Asia/Shanghai），
-     * 避免客户端时区或系统时间造成偏差
+     * 当天有题且每道题都有该用户当天的非空作答，才算科目完成。
+     * EXISTS 按题目ID匹配，重复作答不抵扣缺题，is_used 标记不作为完成依据。
      */
-    @Select("SELECT DISTINCT subject FROM question_records " +
-            "WHERE user_id = #{userId} AND DATE(answered_at) = CURDATE()")
-    List<String> selectTodaySubjects(@Param("userId") Long userId);
+    String COMPLETED_SUBJECTS_SQL =
+            "SELECT DISTINCT q.subject FROM questions q " +
+            "WHERE q.user_id = #{userId} AND q.generated_date = #{date} " +
+            "AND q.subject IN ('math', 'english', 'chinese') " +
+            "AND NOT EXISTS (SELECT 1 FROM questions pending " +
+            "  WHERE pending.user_id = q.user_id AND pending.subject = q.subject " +
+            "  AND pending.generated_date = q.generated_date " +
+            "  AND NOT EXISTS (SELECT 1 FROM question_records r " +
+            "    WHERE r.user_id = pending.user_id AND r.question_id = pending.id " +
+            "    AND r.subject = pending.subject AND DATE(r.answered_at) = pending.generated_date " +
+            "    AND r.user_answer IS NOT NULL AND CHAR_LENGTH(TRIM(r.user_answer)) > 0))";
+
+    @Select(COMPLETED_SUBJECTS_SQL)
+    List<String> selectCompletedSubjects(@Param("userId") Long userId, @Param("date") LocalDate date);
+
+    // 所有题首次答对，且没有任何重试或错误记录，才享受全对奖励。
+    String FIRST_TRY_PERFECT_SQL = "SELECT DISTINCT q.subject FROM questions q " +
+            "WHERE q.user_id = #{userId} AND q.generated_date = #{date} " +
+            "AND q.subject IN ('math', 'english', 'chinese') " +
+            "AND NOT EXISTS (SELECT 1 FROM questions pending " +
+            "  WHERE pending.user_id = q.user_id AND pending.subject = q.subject " +
+            "  AND pending.generated_date = q.generated_date " +
+            "  AND NOT EXISTS (SELECT 1 FROM question_records r " +
+            "    WHERE r.user_id = pending.user_id AND r.question_id = pending.id " +
+            "    AND r.subject = pending.subject AND DATE(r.answered_at) = pending.generated_date " +
+            "    AND r.first_attempt_correct = TRUE AND r.user_answer IS NOT NULL AND CHAR_LENGTH(TRIM(r.user_answer)) > 0))" +
+            " AND NOT EXISTS (SELECT 1 FROM questions asked JOIN question_records previous " +
+            "ON previous.question_id = asked.id AND previous.user_id = asked.user_id " +
+            "WHERE asked.user_id = q.user_id AND asked.subject = q.subject " +
+            "AND asked.generated_date = q.generated_date AND DATE(previous.answered_at) = q.generated_date " +
+            "AND (previous.first_attempt_correct IS NULL OR previous.first_attempt_correct = FALSE))";
+
+    @Select(FIRST_TRY_PERFECT_SQL)
+    List<String> selectFirstTryPerfectSubjects(@Param("userId") Long userId, @Param("date") LocalDate date);
+
+    @Select("SELECT CURDATE()")
+    LocalDate selectDatabaseToday();
 }

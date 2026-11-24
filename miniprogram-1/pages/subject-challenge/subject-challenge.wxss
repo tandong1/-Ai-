@@ -1,20 +1,20 @@
 /* 整体容器 */
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #315bd8 0%, #203a91 100%);
   padding: 40rpx 30rpx;
 }
 
 .container.math {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #315bd8 0%, #203a91 100%);
 }
 
 .container.english {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #76b7a4 0%, #317f6a 100%);
 }
 
 .container.chinese {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(135deg, #e9c772 0%, #e4ac64 100%);
 }
 
 /* 顶部信息 */
@@ -75,7 +75,7 @@
 }
 
 .question-type-badge {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #315bd8 0%, #203a91 100%);
   color: #fff;
   padding: 8rpx 20rpx;
   border-radius: 20rpx;
@@ -109,22 +109,22 @@
   display: flex;
   align-items: center;
   padding: 24rpx;
-  border: 2rpx solid #e5e7eb;
+  border: 2rpx solid #d5e0f3;
   border-radius: 16rpx;
   transition: all 0.3s;
-  background: #f9fafb;
+  background: #f7f5ed;
 }
 
 .option-item.selected {
-  border-color: #667eea;
-  background: #f0f4ff;
+  border-color: #315bd8;
+  background: #e8efff;
 }
 
 .option-label {
   width: 56rpx;
   height: 56rpx;
   border-radius: 50%;
-  background: #667eea;
+  background: #315bd8;
   color: #fff;
   display: flex;
   align-items: center;
@@ -136,7 +136,7 @@
 }
 
 .option-item.selected .option-label {
-  background: #4f46e5;
+  background: #2547a5;
   transform: scale(1.1);
 }
 
@@ -156,11 +156,11 @@
   width: 100%;
   min-height: 200rpx;
   padding: 24rpx;
-  border: 2rpx solid #e5e7eb;
+  border: 2rpx solid #d5e0f3;
   border-radius: 16rpx;
   font-size: 28rpx;
   color: #333;
-  background: #f9fafb;
+  background: #f7f5ed;
   box-sizing: border-box;
 }
 
@@ -181,7 +181,7 @@
 }
 
 .feedback-box.correct {
-  background: #ecfdf5;
+  background: #edf7f0;
   border-color: #10b981;
 }
 
@@ -243,37 +243,55 @@
 
 .button-group {
   display: flex;
-  gap: 20rpx;
+  align-items: stretch;
+  gap: 16rpx;
+}
+
+.button-group > button {
+  flex: 1 1 0%;
+  width: 0;
+  min-width: 0;
 }
 
 .btn-submit,
 .btn-primary,
 .btn-secondary,
 .btn-retry,
-.btn-finish {
+.btn-finish,
+.btn-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   width: 100%;
-  height: 88rpx;
+  height: 96rpx;
+  margin: 0;
+  padding: 0 12rpx;
   border-radius: 16rpx;
-  font-size: 32rpx;
+  font-size: 28rpx;
+  line-height: 1.4;
   font-weight: 500;
+  white-space: nowrap;
   border: none;
 }
 
 .btn-submit,
 .btn-primary,
 .btn-finish {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #315bd8 0%, #203a91 100%);
   color: #fff;
 }
 
 .btn-secondary {
-  background: #f3f4f6;
-  color: #666;
+  background: #e3ebff;
+  color: #35476b;
+  box-shadow: 0 6rpx 0 #c8d5f4;
 }
 
 .btn-retry {
   background: #fef3c7;
-  color: #f59e0b;
+  color: #855020;
+  box-shadow: 0 6rpx 0 #ead69a;
 }
 
 /* 进度条 */
@@ -342,11 +360,31 @@
 
 .btn-back {
   width: 400rpx;
-  height: 88rpx;
+  max-width: 100%;
+  height: 96rpx;
   background: #fff;
-  color: #667eea;
+  color: #315bd8;
   border-radius: 16rpx;
   font-size: 32rpx;
   font-weight: 500;
   border: none;
 }
+
+
+/* 太空探索主题 */
+.container, .container.math, .container.english, .container.chinese { background: #f0f5ff; }
+.subject-badge, .progress-info { background: #e3ebff; border-radius: 16rpx; }
+.subject-name, .progress-text, .result-title, .stat-value { color: #1f2e52; }
+.question-card { border: 2rpx solid #d5e0f3; box-shadow: 0 8rpx 0 #dce5f8; border-radius: 28rpx; padding: 32rpx; }
+.question-type-badge { background: #e3ebff; color: #2547a5; border-radius: 10rpx; }
+.option-item { background: #ffffff; border-color: #d5e0f3; min-height: 70rpx; }
+.option-item.selected { border-color: #315bd8; background: #e8efff; box-shadow: 0 4rpx 0 #c8d5f4; }
+.option-label { background: #e3ebff; color: #2547a5; border-radius: 14rpx; }
+.option-item.selected .option-label { background: #315bd8; color: #fff; }
+.btn-submit, .btn-primary, .btn-finish { background: #315bd8; box-shadow: 0 6rpx 0 #203a91; }
+.progress-bar { background: #d5e0f3; height: 14rpx; margin-top: 38rpx; }
+.progress-fill { background: #5c83ed; }
+.result-stats { width: 100%; gap: 16rpx; }
+.stat-item { flex: 1; padding: 32rpx 12rpx; background: #e3ebff; }
+.stat-label { color: #52678f; }
+.btn-back { background: #315bd8; color: #fff; }

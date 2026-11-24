@@ -1,5 +1,6 @@
 const http = require('../../utils/http.js');
 const app = getApp();
+const { shuffleChoiceOptions, originalAnswer, displayedCorrectAnswer } = require('../../utils/choice-options.js');
 
 Page({
   data: {
@@ -26,7 +27,7 @@ Page({
     // 完成状态
     showResult: false,
     correctCount: 0,
-    totalPoints: 1  // 完成一个科目得1分
+    totalPoints: 0  // 以后端返回的实际奖励为准
   },
 
   onLoad: function(options) {
@@ -213,6 +214,7 @@ Page({
       totalQuestions: questions.length,
       currentQuestionData: questions[0],
       answers: answers,
+      totalPoints: data.pointsEarned === undefined ? 1 : data.pointsEarned,
       showResult: true, // 显示为已完成状态
       correctCount: questions.filter(q => q.isCorrect).length
     });
@@ -260,7 +262,7 @@ Page({
     // 获取用户答案（选择题转换为字母）
     let userAnswerValue;
     if (question.type === 'choice') {
-      userAnswerValue = this.data.optionLabels[userAnswer];
+      userAnswerValue = originalAnswer(question, userAnswer, this.data.optionLabels);
     } else {
       userAnswerValue = userAnswer;
     }
@@ -308,7 +310,7 @@ Page({
         this.setData({
           attemptCount: attemptCount,
           isCorrect: false,
-          currentFeedback: '❌ 再次答错，正确答案是：' + question.correctAnswer,
+          currentFeedback: '❌ 再次答错，正确答案是：' + displayedCorrectAnswer(question, this.data.optionLabels),
           showAnalysis: true,
           showCorrectAnswer: true
         });
@@ -388,7 +390,7 @@ Page({
     this.data.questions.forEach((question, index) => {
       const userAnswer = this.data.answers[index];
       if (userAnswer !== undefined) {
-        const answerValue = question.type === 'choice' ? optionMap[userAnswer] : userAnswer;
+        const answerValue = question.type === 'choice' ? originalAnswer(question, userAnswer, optionMap) : userAnswer;
         const attemptCount = this.data.attemptCount[index] || 0;
         const isCorrect = answerValue === question.correctAnswer;
 
@@ -498,11 +500,13 @@ Page({
 
         // 显示结果
         that.setData({
-          showResult: true
+          showResult: true,
+          correctCount: data.correctCount,
+          totalPoints: data.pointsEarned
         });
 
         wx.showToast({
-          title: '完成挑战！+1积分',
+          title: data.pointsEarned === 2 ? '首次全对！+2积分' : '完成挑战！+' + data.pointsEarned + '积分',
           icon: 'success',
           duration: 2000
         });
@@ -586,13 +590,29 @@ Page({
   },
 
   retryQuestion: function() {
-    // 清除当前答案，允许重新作答
-    const answers = this.data.answers;
-    delete answers[this.data.currentQuestion];
+    const currentIndex = this.data.currentQuestion;
+    const questions = this.data.questions.slice();
+    let question = questions[currentIndex];
+    // 仅第一次答错后的重试换位；保存在题目上，切换题目后也保持一致。
+    if (question.type === 'choice' && this.data.attemptCount[currentIndex] === 1 &&
+        !this.data.isCorrect && !this.data.showCorrectAnswer && !question.retryShuffled) {
+      question = {
+        ...question,
+        ...shuffleChoiceOptions(question.options, question.optionOrder),
+        retryShuffled: true
+      };
+      question.displayCorrectAnswer = displayedCorrectAnswer(question, this.data.optionLabels);
+      questions[currentIndex] = question;
+    }
+    const answers = { ...this.data.answers };
+    delete answers[currentIndex];
 
     this.setData({
+      questions: questions,
+      currentQuestionData: question,
       answers: answers,
       showAnalysis: false,
+      showCorrectAnswer: false,
       currentFeedback: '',
       isCorrect: false
     });

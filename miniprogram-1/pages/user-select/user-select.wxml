@@ -1,7 +1,7 @@
 <view class="container">
   <view class="title-section">
     <text class="main-title">小小学霸</text>
-    <text class="sub-title">选择你的身份开始学习</text>
+    <text class="sub-title">宇航员请就位，准备探索知识宇宙</text>
   </view>
 
   <view class="users-section">

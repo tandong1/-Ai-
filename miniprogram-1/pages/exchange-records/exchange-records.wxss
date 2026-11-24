@@ -1,5 +1,5 @@
 page {
-  background: #f5f7fa;
+  background: #f0f5ff;
 }
 
 .container {
@@ -37,12 +37,12 @@ page {
 .record-name {
   font-size: 32rpx;
   font-weight: 600;
-  color: #1f2937;
+  color: #1f2e52;
 }
 
 .record-time {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: #7383a1;
 }
 
 .record-points {
@@ -59,7 +59,7 @@ page {
 
 .points-unit {
   font-size: 22rpx;
-  color: #9ca3af;
+  color: #7383a1;
 }
 
 /* 空状态 */
@@ -82,12 +82,19 @@ page {
   display: block;
   font-size: 32rpx;
   font-weight: 600;
-  color: #6b7280;
+  color: #657594;
   margin-bottom: 16rpx;
 }
 
 .empty-hint {
   display: block;
   font-size: 26rpx;
-  color: #9ca3af;
+  color: #7383a1;
 }
+
+
+/* 太空探索主题 */
+.record-item { background: #ffffff; border: 2rpx solid #d5e0f3; box-shadow: 0 5rpx 0 #e0e7f5; }
+.record-content { min-width: 0; }
+.record-name { word-break: break-all; }
+.record-points { margin-left: 16rpx; flex-shrink: 0; }

@@ -11,15 +11,16 @@
     "pages/points/points"
   ],
   "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#6366f1",
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#f0f5ff",
     "navigationBarTitleText": "小小学霸",
-    "navigationBarTextStyle": "white"
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f0f5ff"
   },
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#6366f1",
-    "backgroundColor": "#ffffff",
+    "color": "#7383a1",
+    "selectedColor": "#315bd8",
+    "backgroundColor": "#f0f5ff",
     "borderStyle": "white",
     "list": [
       {

@@ -9,6 +9,7 @@ import java.util.List;
  */
 @Data
 public class CompletedQuestionsVO {
+    private Integer pointsEarned;
     private String subject;
     private LocalDate completedDate;
     private List<CompletedQuestionDetailVO> questions;

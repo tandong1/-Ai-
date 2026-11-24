@@ -84,7 +84,7 @@ public class QuestionController {
 
     /**
      * 获取今日各科目完成状态
-     * 以服务端 question_records 为准，避免客户端缓存丢失后显示为未完成
+     * 服务端逐题核对当天 questions 与 question_records，全部作答才算完成
      */
     @GetMapping("/daily/progress")
     public Result<DailyProgressVO> getDailyProgress(

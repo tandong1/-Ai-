@@ -5,9 +5,12 @@ import com.study.dto.SubmitAnswerDTO;
 import com.study.entity.Question;
 import com.study.entity.QuestionRecord;
 import com.study.entity.User;
+import com.study.entity.PointsRecord;
 import com.study.common.BusinessException;
 import com.study.mapper.QuestionMapper;
 import com.study.mapper.QuestionRecordMapper;
+import com.study.mapper.UserMapper;
+import com.study.mapper.PointsRecordMapper;
 import com.study.service.AchievementService;
 import com.study.service.QuestionService;
 import com.study.service.UserService;
@@ -32,6 +35,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
+
+    private final UserMapper userMapper;
+    private final PointsRecordMapper pointsRecordMapper;
 
     private final QuestionMapper questionMapper;
     private final QuestionRecordMapper questionRecordMapper;
@@ -84,13 +90,14 @@ public class QuestionServiceImpl implements QuestionService {
     public SubmitResultVO submitAnswers(Long userId, SubmitAnswerDTO submitDTO) {
         log.info("提交答案: userId={}, subject={}", userId, submitDTO.getSubject());
 
-        User user = userService.getUserById(userId);
+        User user = userMapper.selectForUpdate(userId);
         if (user == null) {
             throw new BusinessException("用户不存在");
         }
 
         int totalQuestions = submitDTO.getAnswers().size();
         int correctCount = 0;
+        Long pointsSourceId = null;
         List<SubmitResultVO.QuestionResultDetail> details = new ArrayList<>();
 
         for (SubmitAnswerDTO.AnswerItem answerItem : submitDTO.getAnswers()) {
@@ -127,9 +134,10 @@ public class QuestionServiceImpl implements QuestionService {
             record.setCorrectAnswer(question.getCorrectAnswer());
             record.setAnalysis(question.getAnalysis());
             record.setAttemptCount(attemptCount);
-            record.setFirstAttemptCorrect(attemptCount == 1 && isCorrect);
+            record.setFirstAttemptCorrect(Integer.valueOf(1).equals(answerItem.getAttemptCount()) && isCorrect);
 
             questionRecordMapper.insert(record);
+            if (pointsSourceId == null) pointsSourceId = record.getId();
 
             // 标记题目已使用
             question.setIsUsed(true);
@@ -152,10 +160,21 @@ public class QuestionServiceImpl implements QuestionService {
             details.add(detail);
         }
 
-        // 完成一个科目，统一加1分
-        int pointsEarned = 1;
+        // 逐题核对当天整科记录，漏题、答错或重试均不享受首次全对奖励。
+        boolean firstTryPerfect = totalQuestions > 0 && questionRecordMapper.selectFirstTryPerfectSubjects(
+                userId, questionRecordMapper.selectDatabaseToday()).contains(submitDTO.getSubject());
+        int pointsEarned = firstTryPerfect ? 2 : 1;
         int newTotalPoints = user.getTotalPoints() + pointsEarned;
         userService.updateUserPoints(userId, newTotalPoints);
+        PointsRecord pointsRecord = new PointsRecord();
+        pointsRecord.setUserId(userId);
+        pointsRecord.setChangeType("earn");
+        pointsRecord.setChangeAmount(pointsEarned);
+        pointsRecord.setSourceType("daily_challenge");
+        pointsRecord.setSourceId(pointsSourceId);
+        pointsRecord.setDescription(firstTryPerfect ? "科目挑战首次全对" : "完成科目挑战");
+        pointsRecord.setBalanceAfter(newTotalPoints);
+        pointsRecordMapper.insert(pointsRecord);
 
         // 积分结算之后再评估成就，这样「积分大户」当次提交就能解锁
         List<AchievementVO> newAchievements = achievementService.evaluateAndUnlock(userId);
@@ -259,6 +278,7 @@ public class QuestionServiceImpl implements QuestionService {
         CompletedQuestionsVO result = new CompletedQuestionsVO();
         result.setSubject(subject);
         result.setCompletedDate(today);
+        result.setPointsEarned(pointsRecordMapper.selectDailyChallengePoints(userId, today, subject));
         result.setQuestions(details);
 
         return result;
@@ -330,6 +350,8 @@ public class QuestionServiceImpl implements QuestionService {
         int offset = (current - 1) * size;
         List<RecordGroupVO> groups = questionRecordMapper.selectRecordGroups(userId, subject, offset, size);
 
+        groups.forEach(group -> group.setEarnedPoints(pointsRecordMapper.selectDailyChallengePoints(
+                userId, group.getRecordDate(), group.getSubject())));
         return PageVO.of(groups, total, current, size);
     }
 
@@ -337,7 +359,7 @@ public class QuestionServiceImpl implements QuestionService {
     public DailyProgressVO getDailyProgress(Long userId) {
         log.info("获取今日完成状态: userId={}", userId);
 
-        List<String> subjects = questionRecordMapper.selectTodaySubjects(userId);
+        List<String> subjects = questionRecordMapper.selectCompletedSubjects(userId, questionRecordMapper.selectDatabaseToday());
 
         DailyProgressVO progress = new DailyProgressVO();
         for (String subject : subjects) {
@@ -421,6 +443,7 @@ public class QuestionServiceImpl implements QuestionService {
         CompletedQuestionsVO result = new CompletedQuestionsVO();
         result.setSubject(subject);
         result.setCompletedDate(date);
+        result.setPointsEarned(pointsRecordMapper.selectDailyChallengePoints(userId, date, subject));
         result.setQuestions(details);
 
         return result;

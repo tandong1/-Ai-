@@ -1,184 +1,64 @@
-page {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
+/* 太空探索：首页 */
+page { background: #f0f5ff; }
+.container { padding: 28rpx 32rpx 40rpx; }
+.header-info, .date-info, .points-badge { display: flex; align-items: center; }
+.header-info { justify-content: space-between; margin-bottom: 32rpx; }
+.date-info { padding: 12rpx 0; }
+.date-icon, .trophy-icon { font-size: 28rpx; margin-right: 10rpx; }
+.date-text { font-size: 25rpx; color: #657594; }
+.points-badge { padding: 12rpx 20rpx; background: #ffe0b3; border: 2rpx solid #f5bf82; border-radius: 16rpx; }
+.points-text { font-size: 26rpx; color: #855020; font-weight: 700; }
+.adventure-hero { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 36rpx 28rpx; background: #e3ebff; border: 2rpx solid #c8d5f4; border-radius: 28rpx; margin-bottom: 40rpx; overflow: hidden; }
+.hero-copy { flex: 1; min-width: 0; }
+.hero-label { font-size: 22rpx; color: #526da6; letter-spacing: 3rpx; }
+.page-title { font-size: 38rpx; font-weight: 800; color: #1f2e52; margin: 16rpx 0; line-height: 1.4; }
+.hero-desc { font-size: 23rpx; color: #52678f; }
+.hero-stamp { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; margin-left: 12rpx; transform: rotate(8deg); }
+.stamp-icon { font-size: 68rpx; }
+.stamp-text { font-size: 22rpx; color: #315bd8; font-weight: 700; border-bottom: 3rpx solid #315bd8; }
+.section-heading { display: flex; align-items: center; justify-content: space-between; font-size: 30rpx; font-weight: 700; margin-bottom: 22rpx; }
+.section-note { font-size: 22rpx; color: #657594; font-weight: 400; }
+.subject-list { margin-bottom: 36rpx; }
+.subject-card { display: flex; align-items: center; border: 2rpx solid; border-radius: 24rpx; padding: 30rpx 24rpx; margin-bottom: 22rpx; box-shadow: 0 6rpx 0 rgba(31,46,82,.12); transition: transform .15s; }
+.subject-card:active { transform: translateY(4rpx); box-shadow: none; }
+.math-card { background: #e7edff; border-color: #c4d1ff; }
+.english-card { background: #e4f3ff; border-color: #beddf4; }
+.chinese-card { background: #fff0e2; border-color: #f1d2b4; }
+.subject-icon { font-size: 52rpx; margin-right: 24rpx; width: 86rpx; height: 86rpx; border-radius: 20rpx; background: rgba(255,255,255,.65); display: flex; align-items: center; justify-content: center; }
+.subject-info { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.subject-name { font-size: 34rpx; font-weight: 700; margin-bottom: 6rpx; }
+.subject-desc { font-size: 23rpx; color: #52678f; }
+.arrow-icon { font-size: 34rpx; color: #315bd8; margin-left: 12rpx; }
+.today-progress { background: #ffffff; border: 2rpx solid #d5e0f3; border-radius: 24rpx; padding: 28rpx; }
+.progress-title { font-size: 30rpx; font-weight: 700; margin-bottom: 24rpx; }
+.progress-items { display: flex; justify-content: space-between; }
+.progress-item { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10rpx 0; border-right: 2rpx dashed #d5e0f3; }
+.progress-item:last-child { border-right: none; }
+.progress-subject { font-size: 26rpx; margin-bottom: 14rpx; }
+.progress-status { font-size: 22rpx; padding: 6rpx 14rpx; border-radius: 10rpx; }
+.progress-status.completed { color: #2547a5; background: #e2f2ed; }
+.progress-status.pending { color: #63738f; background: #edf1f8; }
 
-.container {
-  padding: 32rpx;
-  min-height: 100vh;
-}
+/* 星际任务站 */
+.adventure-hero { background: #203a79; border-color: #304f94; border-radius: 36rpx 36rpx 72rpx 36rpx; padding: 42rpx 28rpx; }
+.adventure-hero::before { content: ''; position: absolute; width: 220rpx; height: 220rpx; right: -70rpx; top: -90rpx; border: 2rpx solid #5775b6; border-radius: 50%; pointer-events: none; }
+.hero-copy, .hero-stamp { position: relative; z-index: 1; }
+.hero-label { color: #b8ccff; }
+.page-title { color: #ffffff; font-size: 36rpx; }
+.hero-desc { color: #d0ddff; font-size: 22rpx; }
+.hero-stamp { transform: rotate(-8deg); }
+.stamp-icon { font-size: 76rpx; }
+.stamp-text { color: #ffce90; border: none; font-size: 20rpx; }
+.subject-card { border-radius: 32rpx; box-shadow: 0 8rpx 20rpx rgba(31,46,82,.06); }
+.subject-icon { border-radius: 50%; }
+.arrow-icon { width: 48rpx; height: 48rpx; background: #ffffff; border-radius: 50%; text-align: center; line-height: 48rpx; }
+.today-progress { border-radius: 32rpx; }
 
-/* 顶部信息栏 */
-.header-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 48rpx;
-}
-
-.date-info {
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 16rpx 24rpx;
-  border-radius: 48rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
-}
-
-.date-icon {
-  font-size: 32rpx;
-  margin-right: 12rpx;
-}
-
-.date-text {
-  font-size: 28rpx;
-  color: #333333;
-  font-weight: 500;
-}
-
-.points-badge {
-  display: flex;
-  align-items: center;
-  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-  padding: 16rpx 24rpx;
-  border-radius: 48rpx;
-  box-shadow: 0 4rpx 12rpx rgba(255, 215, 0, 0.3);
-}
-
-.trophy-icon {
-  font-size: 32rpx;
-  margin-right: 12rpx;
-}
-
-.points-text {
-  font-size: 28rpx;
-  color: #8b4513;
-  font-weight: 600;
-}
-
-/* 页面标题 */
-.page-title {
-  font-size: 48rpx;
-  font-weight: 700;
-  color: #ffffff;
-  text-align: center;
-  margin-bottom: 48rpx;
-  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
-}
-
-/* 科目列表 */
-.subject-list {
-  margin-bottom: 48rpx;
-}
-
-.subject-card {
-  display: flex;
-  align-items: center;
-  background: #ffffff;
-  border-radius: 24rpx;
-  padding: 36rpx 32rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
-  transition: transform 0.3s;
-  border-left: 8rpx solid;
-}
-
-.subject-card:active {
-  transform: scale(0.98);
-}
-
-.math-card {
-  border-left-color: #3b82f6;
-  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
-}
-
-.english-card {
-  border-left-color: #10b981;
-  background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
-}
-
-.chinese-card {
-  border-left-color: #f59e0b;
-  background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);
-}
-
-.subject-icon {
-  font-size: 72rpx;
-  margin-right: 24rpx;
-}
-
-.subject-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.subject-name {
-  font-size: 36rpx;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 8rpx;
-}
-
-.subject-desc {
-  font-size: 24rpx;
-  color: #6b7280;
-}
-
-.arrow-icon {
-  font-size: 48rpx;
-  color: #9ca3af;
-  font-weight: 300;
-}
-
-/* 今日进度 */
-.today-progress {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 24rpx;
-  padding: 32rpx;
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
-}
-
-.progress-title {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 24rpx;
-}
-
-.progress-items {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-}
-
-.progress-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20rpx 24rpx;
-  background: #f9fafb;
-  border-radius: 16rpx;
-}
-
-.progress-subject {
-  font-size: 28rpx;
-  color: #374151;
-  font-weight: 500;
-}
-
-.progress-status {
-  font-size: 24rpx;
-  padding: 8rpx 16rpx;
-  border-radius: 12rpx;
-  font-weight: 500;
-}
-
-.progress-status.completed {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.progress-status.pending {
-  background: #fee2e2;
-  color: #991b1b;
-}
+/* 全部完成后在原进度区域展示刮奖卡 */
+.scratch-caption { display: block; font-size: 23rpx; color: #657594; margin-bottom: 22rpx; line-height: 1.7; }
+.scratch-result { padding: 28rpx 24rpx; border-radius: 24rpx; background: #fff5df; text-align: center; }
+.scratch-result-icon { display: block; font-size: 58rpx; }
+.scratch-prize { display: block; color: #855020; font-size: 34rpx; font-weight: 700; margin: 12rpx 0 18rpx; }
+.scratch-message { display: block; font-size: 28rpx; line-height: 1.8; color: #35476b; }
+.scratch-footer { display: block; font-size: 22rpx; color: #786543; margin-top: 20rpx; }
+.scratch-retry { background: #315bd8; color: white; border-radius: 16rpx; font-size: 26rpx; margin-top: 20rpx; }

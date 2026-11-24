@@ -1,5 +1,5 @@
 page {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #315bd8 0%, #203a91 100%);
   height: 100vh;
 }
 
@@ -83,7 +83,7 @@ page {
 .user-name {
   font-size: 36rpx;
   font-weight: 600;
-  color: #1f2937;
+  color: #1f2e52;
   margin-bottom: 16rpx;
 }
 
@@ -94,7 +94,7 @@ page {
 
 .stats-item {
   font-size: 24rpx;
-  color: #6b7280;
+  color: #657594;
   background: #f3f4f6;
   padding: 8rpx 16rpx;
   border-radius: 12rpx;
@@ -128,3 +128,13 @@ page {
   color: #ffffff;
   font-weight: 500;
 }
+
+
+/* 太空探索主题 */
+page { background: #f0f5ff; }
+.container { padding-top: calc(100rpx + env(safe-area-inset-top)); }
+.main-title { color: #1f2e52; text-shadow: none; }
+.sub-title { color: #657594; }
+.users-section { gap: 28rpx; }
+.user-card { box-sizing: border-box; width: 100%; max-width: 520rpx; background: #ffffff; border: 2rpx solid #c8d5f4; box-shadow: 0 8rpx 0 #d5e0f3; }
+.avatar-border { border-color: #5c83ed; }

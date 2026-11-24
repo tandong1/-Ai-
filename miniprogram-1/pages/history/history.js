@@ -133,7 +133,7 @@ Page({
       accuracy: accuracy,
       level: level,
       levelText: levelText,
-      earnedPoints: 1 // 完成科目统一1分
+      earnedPoints: group.earnedPoints === undefined ? 1 : group.earnedPoints
     };
   },
 

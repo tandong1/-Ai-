@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "每日挑战",
-  "usingComponents": {}
+  "usingComponents": {
+    "scratch-card": "/components/scratch-card/scratch-card"
+  }
 }

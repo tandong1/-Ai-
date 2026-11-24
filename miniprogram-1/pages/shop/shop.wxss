@@ -1,5 +1,5 @@
 page {
-  background: #f5f7fa;
+  background: #f0f5ff;
 }
 
 .container {
@@ -8,7 +8,7 @@ page {
 
 /* 顶部积分信息 */
 .points-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #315bd8 0%, #203a91 100%);
   padding: 48rpx 32rpx;
   display: flex;
   justify-content: space-between;
@@ -68,14 +68,14 @@ page {
   display: block;
   font-size: 40rpx;
   font-weight: 700;
-  color: #1f2937;
+  color: #1f2e52;
   margin-bottom: 8rpx;
 }
 
 .title-desc {
   display: block;
   font-size: 26rpx;
-  color: #6b7280;
+  color: #657594;
 }
 
 .gifts-list {
@@ -110,14 +110,14 @@ page {
   display: block;
   font-size: 36rpx;
   font-weight: 600;
-  color: #1f2937;
+  color: #1f2e52;
   margin-bottom: 12rpx;
 }
 
 .gift-desc {
   display: block;
   font-size: 26rpx;
-  color: #6b7280;
+  color: #657594;
   line-height: 1.6;
   margin-bottom: 24rpx;
 }
@@ -146,7 +146,7 @@ page {
 
 .price-unit {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: #7383a1;
 }
 
 .exchange-btn {
@@ -162,8 +162,8 @@ page {
 }
 
 .exchange-btn.disabled {
-  background: #e5e7eb;
-  color: #9ca3af;
+  background: #d5e0f3;
+  color: #7383a1;
 }
 
 /* 兑换记录按钮 */
@@ -188,5 +188,14 @@ page {
 .records-text {
   font-size: 28rpx;
   font-weight: 600;
-  color: #1f2937;
+  color: #1f2e52;
 }
+
+
+/* 太空探索主题 */
+.points-header { background: #315bd8; border-radius: 24rpx; padding: 28rpx; }
+.gifts-section { padding: 32rpx 0; }
+.gift-card { background: #ffffff; border: 2rpx solid #d5e0f3; box-shadow: 0 6rpx 0 #e0e7f5; }
+.exchange-btn.active { background: #315bd8; }
+.records-btn { border: 2rpx solid #d5e0f3; border-radius: 20rpx; bottom: calc(24rpx + env(safe-area-inset-bottom)); }
+.container { padding-bottom: calc(150rpx + env(safe-area-inset-bottom)); }

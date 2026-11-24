@@ -1,0 +1,4 @@
+.scratch-surface { position: relative; height: 240rpx; overflow: hidden; border-radius: 24rpx; background: #fff5df; }
+.scratch-under { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #855020; font-size: 26rpx; }
+.scratch-under text:first-child { font-size: 56rpx; margin-bottom: 12rpx; }
+.scratch-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }

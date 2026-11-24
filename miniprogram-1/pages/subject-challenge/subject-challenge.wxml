@@ -60,7 +60,7 @@
 
         <view wx:if="{{showCorrectAnswer}}" class="correct-answer-box">
           <text class="correct-answer-label">正确答案：</text>
-          <text class="correct-answer-value">{{currentQuestionData.correctAnswer}}</text>
+          <text class="correct-answer-value">{{currentQuestionData.displayCorrectAnswer || currentQuestionData.correctAnswer}}</text>
         </view>
       </view>
     </view>

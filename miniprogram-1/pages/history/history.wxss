@@ -15,19 +15,19 @@
 .page-subtitle {
   display: block;
   font-size: 28rpx;
-  color: #6b7280;
+  color: #657594;
 }
 
 /* 统计卡片 */
 .stats-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #315bd8 0%, #203a91 100%);
   border-radius: 32rpx;
   padding: 40rpx;
   display: flex;
   justify-content: space-around;
   align-items: center;
   margin-bottom: 32rpx;
-  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8rpx 24rpx rgba(49, 91, 216, 0.3);
 }
 
 .stat-box {
@@ -103,8 +103,8 @@
 
 .subject-tag {
   font-size: 24rpx;
-  color: #6366f1;
-  background: rgba(99, 102, 241, 0.1);
+  color: #315bd8;
+  background: rgba(49, 91, 216, 0.1);
   padding: 4rpx 16rpx;
   border-radius: 8rpx;
   font-weight: 500;
@@ -145,7 +145,7 @@
 .metric-label {
   display: block;
   font-size: 24rpx;
-  color: #6b7280;
+  color: #657594;
   margin-bottom: 8rpx;
 }
 
@@ -196,7 +196,7 @@
 .empty-hint {
   display: block;
   font-size: 26rpx;
-  color: #9ca3af;
+  color: #7383a1;
 }
 
 /* 列表底部加载提示 */
@@ -207,7 +207,17 @@
 
 .list-footer-text {
   font-size: 26rpx;
-  color: #9ca3af;
+  color: #7383a1;
 }
 
 
+
+
+/* 太空探索主题 */
+.page-header { text-align: left; }
+.page-title { color: #1f2e52; font-size: 42rpx; }
+.stats-card { background: #315bd8; border-radius: 24rpx; box-shadow: 0 6rpx 0 #203a91; padding: 32rpx 16rpx; }
+.history-item { background: #ffffff; border: 2rpx solid #d5e0f3; box-shadow: 0 5rpx 0 #e0e7f5; }
+.subject-tag { color: #2547a5; background: #e3ebff; }
+.date-badge { flex-wrap: wrap; }
+.score-badge { flex-shrink: 0; }
