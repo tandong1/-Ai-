@@ -1,6 +1,6 @@
 const http = require('../../utils/http.js');
 const app = getApp();
-const { shuffleChoiceOptions, originalAnswer, displayedCorrectAnswer } = require('../../utils/choice-options.js');
+const { cleanChoiceOptions, shuffleChoiceOptions, originalAnswer, displayedCorrectAnswer } = require('../../utils/choice-options.js');
 
 Page({
   data: {
@@ -138,7 +138,7 @@ Page({
         id: q.id,
         type: q.questionType,
         question: q.questionText,
-        options: options,
+        options: cleanChoiceOptions(options),
         correctAnswer: q.correctAnswer,
         analysis: q.analysis || '暂无解析'
       };
@@ -189,7 +189,7 @@ Page({
         id: q.questionId,
         type: q.questionType,
         question: q.questionText,
-        options: options,
+        options: cleanChoiceOptions(options),
         correctAnswer: q.correctAnswer,
         analysis: q.analysis || '暂无解析',
         userAnswer: q.userAnswer,

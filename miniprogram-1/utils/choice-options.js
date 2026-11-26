@@ -1,3 +1,11 @@
+/** 页面统一显示标号，去掉题库内容中重复的选项前缀。 */
+function cleanChoiceOptions(options) {
+  if (!Array.isArray(options)) return [];
+  return options.map(option => typeof option === 'string'
+    ? option.replace(/^\s*(?:[A-Da-dＡ-Ｄａ-ｄ]\s*[.．、:：)）]\s*|[（(]\s*[A-Da-dＡ-Ｄａ-ｄ]\s*[)）]\s*)+/, '').trim()
+    : option);
+}
+
 /** 打乱显示顺序，保留每个选项对应的原始答案位置。 */
 function shuffleChoiceOptions(options, originalOrder, random = Math.random) {
   const order = originalOrder || options.map((_, index) => index);
@@ -35,4 +43,4 @@ function displayedCorrectAnswer(question, labels) {
   return displayIndex < 0 ? question.correctAnswer : labels[displayIndex];
 }
 
-module.exports = { shuffleChoiceOptions, originalAnswer, displayedCorrectAnswer };
+module.exports = { cleanChoiceOptions, shuffleChoiceOptions, originalAnswer, displayedCorrectAnswer };

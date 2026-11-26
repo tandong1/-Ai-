@@ -63,4 +63,24 @@
     <text class="records-icon">📋</text>
     <text class="records-text">兑换记录</text>
   </view>
+  <view wx:if="{{selectedGift}}" class="exchange-overlay">
+    <scroll-view scroll-y class="exchange-panel">
+      <text class="exchange-title">兑换 {{selectedGift.name}}</text>
+      <text class="exchange-cost">{{selectedGift.points}} 积分</text>
+      <block wx:if="{{selectedGift.giftType === 'virtual'}}">
+        <input placeholder="游戏名 / 平台名（必填）" maxlength="100" data-field="gameName" bindinput="updateExchangeForm" disabled="{{submitting}}" />
+        <input placeholder="账号（必填）" maxlength="120" data-field="account" bindinput="updateExchangeForm" disabled="{{submitting}}" />
+        <input placeholder="密码（按需填写）" password maxlength="200" data-field="password" bindinput="updateExchangeForm" disabled="{{submitting}}" />
+        <input placeholder="大区 / 服务器（选填）" maxlength="100" data-field="region" bindinput="updateExchangeForm" disabled="{{submitting}}" />
+      </block>
+      <block wx:else>
+        <input placeholder="收货人（必填）" maxlength="80" data-field="recipient" bindinput="updateExchangeForm" disabled="{{submitting}}" />
+        <input placeholder="联系电话（必填）" maxlength="40" data-field="phone" bindinput="updateExchangeForm" disabled="{{submitting}}" />
+        <textarea placeholder="省市区及详细地址（必填）" maxlength="500" data-field="address" bindinput="updateExchangeForm" disabled="{{submitting}}" />
+      </block>
+      <textarea placeholder="备注（选填）" maxlength="500" data-field="remark" bindinput="updateExchangeForm" disabled="{{submitting}}" />
+      <button type="primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="exchangeGift">确认兑换</button>
+      <button disabled="{{submitting}}" bindtap="closeExchange">取消</button>
+    </scroll-view>
+  </view>
 </view>

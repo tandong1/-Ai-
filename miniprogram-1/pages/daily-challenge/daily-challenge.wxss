@@ -55,10 +55,7 @@ page { background: #f0f5ff; }
 .today-progress { border-radius: 32rpx; }
 
 /* 全部完成后在原进度区域展示刮奖卡 */
-.scratch-caption { display: block; font-size: 23rpx; color: #657594; margin-bottom: 22rpx; line-height: 1.7; }
 .scratch-result { padding: 28rpx 24rpx; border-radius: 24rpx; background: #fff5df; text-align: center; }
-.scratch-result-icon { display: block; font-size: 58rpx; }
-.scratch-prize { display: block; color: #855020; font-size: 34rpx; font-weight: 700; margin: 12rpx 0 18rpx; }
+.scratch-prize { display: block; color: #855020; font-size: 30rpx; font-weight: 700; margin-bottom: 12rpx; }
 .scratch-message { display: block; font-size: 28rpx; line-height: 1.8; color: #35476b; }
-.scratch-footer { display: block; font-size: 22rpx; color: #786543; margin-top: 20rpx; }
 .scratch-retry { background: #315bd8; color: white; border-radius: 16rpx; font-size: 26rpx; margin-top: 20rpx; }

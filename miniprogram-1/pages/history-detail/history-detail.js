@@ -1,4 +1,5 @@
 const http = require('../../utils/http.js');
+const { cleanChoiceOptions } = require('../../utils/choice-options.js');
 
 Page({
   data: {
@@ -44,7 +45,10 @@ Page({
       .then(data => {
         wx.hideLoading();
 
-        const questions = data.questions || [];
+        const questions = (data.questions || []).map(q => ({
+          ...q,
+          options: cleanChoiceOptions(q.options)
+        }));
         const correctCount = questions.filter(q => q.isCorrect).length;
         const accuracy = questions.length > 0
           ? Math.round((correctCount / questions.length) * 100)

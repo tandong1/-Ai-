@@ -43,6 +43,7 @@ public class GiftServiceImpl implements GiftService {
         GiftVO vo = new GiftVO();
         vo.setId(gift.getId());
         vo.setName(gift.getName());
+        vo.setGiftType(gift.getGiftType());
         vo.setDescription(gift.getDescription());
         vo.setPoints(gift.getPointsRequired());
         vo.setImages(gift.getImages());

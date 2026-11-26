@@ -22,6 +22,7 @@ public class Gift implements Serializable {
      * 礼物名称
      */
     private String name;
+    private String giftType;
 
     /**
      * 礼物描述

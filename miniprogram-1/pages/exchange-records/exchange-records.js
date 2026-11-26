@@ -1,4 +1,4 @@
-var app = getApp();
+const http = require('../../utils/http.js');
 
 Page({
   data: {
@@ -10,18 +10,11 @@ Page({
   },
 
   loadRecords: function() {
-    var records = wx.getStorageSync('exchange_records') || [];
-    var currentUserId = app.globalData.currentUser ? app.globalData.currentUser.id : 0;
-
-    var userRecords = records.filter(function(record) {
-      return record.userId === currentUserId;
-    });
-
-    for (var i = 0; i < userRecords.length; i++) {
-      userRecords[i].timeStr = this.formatTime(userRecords[i].time);
-    }
-
-    this.setData({ records: userRecords });
+    http.get('/gifts/exchanges').then(records => {
+      this.setData({ records: records.map(record => ({ ...record, timeStr: this.formatTime(record.time),
+        statusText: ({ pending: '待处理', completed: '已完成', cancelled: '已取消' })[record.status] || record.status
+      })) });
+    }).catch(() => {});
   },
 
   formatTime: function(timestamp) {

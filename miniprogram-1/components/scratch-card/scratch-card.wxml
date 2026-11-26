@@ -1,5 +1,5 @@
 <view class="scratch-surface">
-  <view class="scratch-under"><text>✨</text><text>你的努力，值得一份惊喜</text></view>
+  <view class="scratch-under"><text>揭晓中…</text></view>
   <canvas type="2d" id="scratchCanvas" class="scratch-canvas" disable-scroll="{{true}}"
     bindtouchstart="start" catchtouchmove="move" bindtouchend="end" bindtouchcancel="end" />
 </view>

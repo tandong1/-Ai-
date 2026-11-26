@@ -10,6 +10,7 @@ import java.util.List;
 public class GiftVO {
     private Long id;
     private String name;
+    private String giftType;
     private String description;
     private Integer points;
     private List<String> images;

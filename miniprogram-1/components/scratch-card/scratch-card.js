@@ -17,9 +17,9 @@ Component({
         ctx.fillStyle = '#35476b';
         ctx.textAlign = 'center';
         ctx.font = 'bold 19px sans-serif';
-        ctx.fillText('刮开今日的小惊喜', width / 2, height / 2 - 6);
+        ctx.fillText('刮开奖励', width / 2, height / 2 - 6);
         ctx.font = '12px sans-serif';
-        ctx.fillText('用手指涂一涂 · 看看你的幸运奖励', width / 2, height / 2 + 22);
+        ctx.fillText('用手指涂一涂', width / 2, height / 2 + 22);
         this.ctx = ctx;
         this.surface = { width, height };
         this.cells = new Set();

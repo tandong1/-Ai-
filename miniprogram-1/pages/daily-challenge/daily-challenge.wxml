@@ -53,7 +53,7 @@
 
   <!-- 今日进度 -->
   <view class="today-progress">
-    <view class="progress-title">{{scratch.eligible ? '今日任务全完成 · 幸运时刻' : '今日任务进度'}}</view>
+    <view class="progress-title">{{scratch.eligible ? '今日奖励' : '今日任务进度'}}</view>
     <view class="progress-items" wx:if="{{!scratch.eligible}}">
       <view class="progress-item">
         <text class="progress-subject">数学</text>
@@ -75,13 +75,10 @@
       </view>
     </view>
     <view wx:else class="daily-scratch">
-      <text class="scratch-caption">三科挑战达成！送你一句鼓励，还有机会获得额外积分</text>
       <scratch-card wx:if="{{!scratch.revealed && !scratchStarted}}" bind:reveal="revealScratch" />
       <view wx:elif="{{scratch.revealed}}" class="scratch-result">
-        <text class="scratch-result-icon">{{scratch.points > 0 ? '🎉' : '🌟'}}</text>
-        <text class="scratch-prize">{{scratch.points > 0 ? '幸运加分 +' + scratch.points : '送你一颗坚持之星'}}</text>
+        <text class="scratch-prize">{{scratch.points > 0 ? '+' + scratch.points + ' 积分' : '今日未中奖'}}</text>
         <text class="scratch-message">{{scratch.message}}</text>
-        <text class="scratch-footer">{{scratch.points > 0 ? '奖励积分已到账，明天继续加油！' : '今天没有额外积分，但你的努力一样闪闪发光！'}}</text>
       </view>
       <view wx:else class="scratch-result">
         <text class="scratch-message">{{scratchLoading ? '正在揭晓今日惊喜…' : '结果暂未加载，请重试'}}</text>

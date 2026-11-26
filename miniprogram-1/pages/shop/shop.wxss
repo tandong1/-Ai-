@@ -199,3 +199,12 @@ page {
 .exchange-btn.active { background: #315bd8; }
 .records-btn { border: 2rpx solid #d5e0f3; border-radius: 20rpx; bottom: calc(24rpx + env(safe-area-inset-bottom)); }
 .container { padding-bottom: calc(150rpx + env(safe-area-inset-bottom)); }
+
+.exchange-overlay { position: fixed; inset: 0; background: rgba(15,30,60,.5); z-index: 100; display: flex; align-items: center; justify-content: center; }
+.exchange-panel { width: 650rpx; max-height: 80vh; background: #fff; border-radius: 24rpx; padding: 32rpx; box-sizing: border-box; }
+.exchange-title { display: block; font-size: 32rpx; font-weight: bold; }
+.exchange-cost { display: block; margin: 16rpx 0; color: #315bd8; }
+.exchange-panel input, .exchange-panel textarea { box-sizing: border-box; width: 100%; background: #f2f5fa; border-radius: 12rpx; padding: 18rpx; margin-bottom: 20rpx; font-size: 28rpx; }
+.exchange-panel input { height: 84rpx; }
+.exchange-panel textarea { height: 140rpx; }
+.exchange-panel button { margin: 16rpx 0; }

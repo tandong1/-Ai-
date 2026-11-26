@@ -1,10 +1,12 @@
 <view class="container">
   <view wx:if="{{records.length > 0}}" class="records-list">
-    <view wx:for="{{records}}" wx:key="index" class="record-item">
+    <view wx:for="{{records}}" wx:key="id" class="record-item">
       <view class="record-icon">🎁</view>
       <view class="record-content">
         <text class="record-name">{{item.giftName}}</text>
-        <text class="record-time">{{item.timeStr}}</text>
+        <text class="record-time">{{item.timeStr}} · {{item.statusText}}</text>
+        <text wx:if="{{item.giftType === 'physical'}}" class="record-time">{{item.recipient}} {{item.phone}} {{item.address}}</text>
+        <text wx:elif="{{item.giftType === 'virtual'}}" class="record-time">{{item.gameName}} {{item.region}} · {{item.account}}</text>
       </view>
       <view class="record-points">
         <text class="points-value">-{{item.points}}</text>
